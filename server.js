@@ -17,6 +17,11 @@ app.configure(function() {
 
 require('./app/routes')(app);
 
+var StreamConsumer = require('./app/workers/stream_consumer');
+
+var consumer = new StreamConsumer(process.argv[2], process.argv[3]);
+consumer.connect();
+
 io.sockets.on('connection', function(socket) {
     socket.emit('foo', 'bar');
 });
