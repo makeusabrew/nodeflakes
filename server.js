@@ -32,8 +32,11 @@ consumer.emitter.on('tweet', function(tweet) {
     }
     console.log(data.text);
 
-    // @todo ALL tweets should only contain JUST enough information
-    io.sockets.emit('tweet', data);
+    // @todo ALL tweets should only contain JUST enough information by the time they
+    // get here!
+    io.sockets.emit('tweet', {
+        "text": data.text
+    });
 });
 
 io.sockets.on('connection', function(socket) {
