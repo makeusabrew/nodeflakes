@@ -2,7 +2,6 @@ var https = require('https'),
     EventEmitter = require('events').EventEmitter;
     //zeromq  = require('zeromq');
 
-var emitter = new EventEmitter();
 
 var StreamConsumer = function(username, password) {
     var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
@@ -27,8 +26,12 @@ var StreamConsumer = function(username, password) {
     var tweet = '';
 
     this.connect = function() {
+        var that = this;
         console.log("attempting connection");
         https.get(options, function(res) {
+
+            console.log("connected!");
+
             res.setEncoding("utf8");
             res.on('data', function(chunk) {
                 tweet += chunk;
@@ -37,7 +40,7 @@ var StreamConsumer = function(username, password) {
                 if (strpos !== -1) {
                     // bung the completed tweet on the queue
                     //s.send(tweet.substr(0, strpos));
-                    emitter.emit('tweet', tweet.substr(0, strpos));
+                    that.emitter.emit('tweet', tweet.substr(0, strpos));
                     // make sure we don't lose the remainder
                     tweet = tweet.substr(strpos+1);
                 }
@@ -48,6 +51,8 @@ var StreamConsumer = function(username, password) {
             });
         });
     }
+
+    this.emitter = new EventEmitter();
 }
 
 module.exports = StreamConsumer;
