@@ -1,7 +1,6 @@
-var https = require('https'),
-    EventEmitter = require('events').EventEmitter;
-    //zeromq  = require('zeromq');
+var https = require('https');
 
+var socket = null;
 
 var StreamConsumer = function(username, password) {
     var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
@@ -13,23 +12,14 @@ var StreamConsumer = function(username, password) {
             authorization: auth
         }
     };
-
-    /*
-    var s = zeromq.createSocket('push');
-    s.bind('tcp://127.0.0.1:5554', function(err) {
-        if (err) throw err;
-        console.log('bound ZMQ push server');
-    });
-    */
         
     var strpos = -1;
     var tweet = '';
 
-    this.connect = function() {
+    this.start = function() {
         var that = this;
-        console.log("attempting connection");
+        console.log("connecting to "+options.host+"...");
         https.get(options, function(res) {
-
             console.log("connected!");
 
             res.setEncoding("utf8");
@@ -39,8 +29,8 @@ var StreamConsumer = function(username, password) {
 
                 if (strpos !== -1) {
                     // bung the completed tweet on the queue
-                    //s.send(tweet.substr(0, strpos));
-                    that.emitter.emit('tweet', tweet.substr(0, strpos));
+                    console.log("sending message");
+                    socket.send(tweet.substr(0, strpos));
                     // make sure we don't lose the remainder
                     tweet = tweet.substr(strpos+1);
                 }
@@ -52,7 +42,9 @@ var StreamConsumer = function(username, password) {
         });
     }
 
-    this.emitter = new EventEmitter();
+    this.setSocket = function(_socket) {
+        socket = _socket;
+    }
 }
 
 module.exports = StreamConsumer;
