@@ -13,11 +13,14 @@ socket.on('tweet', function(tweet) {
     var y = Math.floor(
         Math.random() * $(window).height()
     );
+
+    var size = Math.round(10 + (tweet.user.followers_count / 100));
+
     var tweet = $("<img class='tweet' title='"+tweet.text+"' src='img/flake.gif' alt='' >").css({
         "left": x,
         "top" : y,
-        "width": 20,
-        "height": 20
+        "width": size,
+        "height": size
     });
     $("#tweets").append(tweet);
 });

@@ -14,7 +14,10 @@ var StreamProcessor = function() {
                 return;
             }
             var tweetData = {
-                "text" : processed.text
+                "text" : processed.text,
+                "user": {
+                    "followers_count": processed.user.followers_count
+                }
             };
             push.send(JSON.stringify(tweetData));
         });
