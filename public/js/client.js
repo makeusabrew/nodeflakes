@@ -7,7 +7,17 @@ socket.on('connect', function() {
 });
 
 socket.on('tweet', function(tweet) {
-    $("#tweets").append(
-        "<div>"+tweet.text+"</div>"
+    var x = Math.floor(
+        Math.random() * $(window).width()
     );
+    var y = Math.floor(
+        Math.random() * $(window).height()
+    );
+    var tweet = $("<img class='tweet' title='"+tweet.text+"' src='img/flake.gif' alt='' >").css({
+        "left": x,
+        "top" : y,
+        "width": 20,
+        "height": 20
+    });
+    $("#tweets").append(tweet);
 });
