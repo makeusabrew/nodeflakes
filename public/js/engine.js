@@ -1,7 +1,10 @@
 var Engine = (function() {
     var that = {};
 
-    var _flakes = [];
+    var _flakes = [],
+        _delta = 0,
+        _lastTick = 0,
+        _tickTime = 0;
 
     that.addRandomlyPositionedTweet = function(data) {
         var x = Math.floor(
@@ -23,6 +26,11 @@ var Engine = (function() {
     }
 
     that.loop = function() {
+        _tickTime = new Date().getTime();
+        // we want a delta in *seconds*, to make it easier to scale our values
+        _delta = (_tickTime - _lastTick) / 1000;
+        _lastTick = _tickTime;
+
         that.tick();
         that.render();
     }
@@ -31,7 +39,7 @@ var Engine = (function() {
         var i = _flakes.length;
         while (i--) {
             //
-            _flakes[i].render();
+            _flakes[i].tick(_delta);
         }
     }
 
