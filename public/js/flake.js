@@ -6,6 +6,8 @@ var Flake = function() {
     this.size = 0;
     this.elem = null;
     this.tweet = null;
+    this.angle = 0;
+    this.rotation = 0;
 }
 
 Flake.prototype = {
@@ -14,6 +16,13 @@ Flake.prototype = {
 
         this.x = options.x;
         this.y = options.y;
+        this.angle = Math.random() * 2*Math.PI;
+
+        // how fast the flake will complete its rotary cycle, e.g. how fast it switches from left to right movement
+        this.rotation = 0.05 + Math.random() * 2;
+
+        // a little bit of vertical spice
+        this.vy = -2.5 + Math.random() * 4;
 
         this.size = Math.round(10 + (this.tweet.user.followers_count / 100));
         this.elem = $(
@@ -30,7 +39,17 @@ Flake.prototype = {
         this.x += this.vx * delta;
         this.y += this.vy * delta;
 
-        this.vy += 10 * delta;
+        // NB no delta on the (horribly hard coded) velocity, since when we actually
+        // add vx to the current position, we account for delta there. So, this value
+        // will be capped from 0 - 40 based on the angle.
+        this.vx = Math.cos(this.angle) * (40);
+
+        // @todo move this hard coded acceleration value
+        this.vy += 5 * delta;
+
+        // @todo cap vy at some sensible limit
+
+        this.angle += this.rotation * delta;
     },
 
     render: function() {

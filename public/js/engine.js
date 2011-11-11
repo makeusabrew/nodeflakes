@@ -11,7 +11,7 @@ var Engine = (function() {
             Math.random() * $(window).width()
         );
         var y = Math.floor(
-            Math.random() * $(window).height()
+            Math.random() * ($(window).height() * 0.75)
         );
 
         var flake = new Flake();
