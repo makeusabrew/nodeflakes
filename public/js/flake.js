@@ -17,7 +17,7 @@ Flake.prototype = {
 
         this.size = Math.round(10 + (this.tweet.user.followers_count / 100));
         this.elem = $(
-            "<img class='tweet' title='"+this.tweet.text+"' src='img/flake.gif' alt='' >"
+            "<img class='tweet' title='"+this.tweet.text+"' src='img/flake.png' alt='' >"
         ).css({
             "left": this.x,
             "top": this.y,
