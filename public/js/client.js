@@ -7,5 +7,11 @@ socket.on('connect', function() {
 });
 
 socket.on('tweet', function(tweet) {
-    Engine.addRandomlyPositionedTweet(tweet);
+    var data = {};
+    try {
+        data = JSON.parse(tweet);
+    } catch (e) {
+        console.log("could not parse tweet");
+    }
+    Engine.addRandomlyPositionedTweet(data);
 });

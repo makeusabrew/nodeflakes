@@ -3,6 +3,7 @@ var Flake = function() {
     this.y = 0;
     this.vx = 0;
     this.vy = 0;
+    this.maxVelocity = 0;
     this.size = 0;
     this.elem = null;
     this.tweet = null;
@@ -27,6 +28,8 @@ Flake.prototype = {
         // a little bit of vertical spice
         this.vy = -3 + Math.random() * 4;
 
+        this.maxVelocity = 10 + Math.random() * 20;
+
         this.elem = $(
             "<img class='tweet' title='"+this.tweet.text+"' src='img/flake.png' alt='' >"
         ).css({
@@ -49,8 +52,8 @@ Flake.prototype = {
         // @todo move this hard coded acceleration value
         this.vy += 5 * delta;
 
-        if (this.vy > 25) {
-            this.vy = 25;
+        if (this.vy > this.maxVelocity) {
+            this.vy = this.maxVelocity;
         }
 
         this.angle += this.rotation * delta;

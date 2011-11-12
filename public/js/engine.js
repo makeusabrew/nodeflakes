@@ -8,7 +8,6 @@ var Engine = (function() {
         _height;
 
     that.addRandomlyPositionedTweet = function(data) {
-        console.log(data.text);
         var size = Math.round(10 + (data.user.followers_count / 100));
 
         var x = Math.floor(

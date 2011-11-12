@@ -23,17 +23,21 @@ var queue = zmq.createSocket('pull');
 queue.bind('tcp://127.0.0.1:5556', function(err) {
     if (err) throw err;
     console.log('bound ZMQ pull server');
-    queue.on('message', function(tweet) {
+    queue.on('message', function(data) {
         console.log("got message");
 
+        /*
+        don't parse the data, assume it's valid
+        let the client parse instead, put the burden on them
         var data = {};
         try {
             data = JSON.parse(tweet);
         } catch (e) {
             console.log("could not parse tweet");
         }
+        */
 
-        io.sockets.emit('tweet', data);
+        io.sockets.emit('tweet', data.toString('utf8'));
     });
 });
 
