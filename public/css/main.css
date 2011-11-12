@@ -1,3 +1,20 @@
+.flake,
 .tweet {
     position:absolute;
+}
+
+.flake {
+    z-index:1;
+}
+
+.tweet {
+    z-index:2;
+    font-size:14px;
+    font-family:Helvetica;
+    background:#000;
+    color:#fff;
+    width:300px;
+    padding:0.5em;
+    border-radius:12px;
+    -moz-border-radius:12px;
 }

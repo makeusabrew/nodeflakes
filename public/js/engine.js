@@ -23,7 +23,6 @@ var Engine = (function() {
             "tweet": data,
             "size": size
         });
-        $("body").append(flake.elem);
 
         _flakes.push(flake);
     }
@@ -67,6 +66,10 @@ var Engine = (function() {
     that.start = function() {
         _height = $(document).height();
         tick();
+    }
+
+    that.getElement = function() {
+        return $("body");
     }
 
     return that;

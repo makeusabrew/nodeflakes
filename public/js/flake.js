@@ -11,6 +11,7 @@ var Flake = function() {
     this.rotation = 0;
     this.dying = false;
     this.dead = false;
+    this.tweetVisible = false;
 }
 
 Flake.prototype = {
@@ -31,13 +32,24 @@ Flake.prototype = {
         this.maxVelocity = 10 + Math.random() * 20;
 
         this.elem = $(
-            "<img class='tweet' title='"+this.tweet.text+"' src='img/flake.png' alt='' >"
+            "<img class='flake' src='img/flake.png' alt='' >"
         ).css({
             "left": this.x,
             "top": this.y,
             "width": this.size,
             "height": this.size
         });
+
+        Engine.getElement().append(this.elem);
+
+        // wire up hover handlers
+        var that = this;
+        this.elem.mouseover(function(e) {
+            if (!that.isTweetVisible()) {
+                that.showTweet();
+            }
+        });
+
     },
 
     tick: function(delta) {
@@ -76,6 +88,10 @@ Flake.prototype = {
         return this.y + this.size;
     },
 
+    getRight: function() {
+        return this.x + this.size;
+    },
+
     isDying: function() {
         return this.dying;
     },
@@ -94,5 +110,41 @@ Flake.prototype = {
     
     getProjectedBottom: function(msec) {
         return this.getBottom() + (this.vy * (msec/1000));
+    },
+
+    isTweetVisible: function() {
+        return this.tweetVisible;
+    },
+
+    showTweet: function() {
+        this.tweetVisible = true;
+        // render it
+        var elem = $(
+            "<div class='tweet'></div>"
+        ).html(
+            this.tweet.text
+        ).css({
+            "left": this.getRight() + 20
+        }).hide();
+
+        Engine.getElement().append(elem);
+
+        elem.css({
+            "top":  this.y + (this.size / 2) - (elem.height() / 2)
+        });
+
+        // this looks worse than it is, it's just a chain of callbacks to
+        // 1. show the tweet
+        // 2. fade out the tweet
+        // 3. remove the tweet from DOM and set the isVisible boolean back to false
+        var that = this;
+        elem.fadeIn(1000, function() {
+            setTimeout(function() {
+                elem.fadeOut(1000, function() {
+                    elem.remove();
+                    that.tweetVisible = false;
+                });
+            }, 3000);
+        });
     }
 };
