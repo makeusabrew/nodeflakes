@@ -53,6 +53,10 @@ Flake.prototype = {
 
         this.angle += this.rotation * delta;
     },
+    
+    kill: function() {
+        this.elem.remove();
+    },
 
     render: function() {
         this.elem.css({

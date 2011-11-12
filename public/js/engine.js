@@ -4,7 +4,8 @@ var Engine = (function() {
     var _flakes = [],
         _delta = 0,
         _lastTick = 0,
-        _tickTime = 0;
+        _tickTime = 0,
+        _height;
 
     that.addRandomlyPositionedTweet = function(data) {
         var size = Math.round(10 + (data.user.followers_count / 100));
@@ -42,6 +43,12 @@ var Engine = (function() {
         while (i--) {
             //
             _flakes[i].tick(_delta);
+
+            if (_flakes[i].y > _height) {
+                _flakes[i].kill();
+                console.log("removing flake ("+i+")");
+                _flakes.splice(i, 1);
+            }
         }
     }
 
@@ -51,6 +58,12 @@ var Engine = (function() {
             //
             _flakes[i].render();
         }
+    }
+
+
+    that.start = function() {
+        _height = $(document).height();
+        tick();
     }
 
     return that;
