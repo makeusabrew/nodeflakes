@@ -11,10 +11,14 @@ var Engine = (function() {
             y: 0,
             w: 0,
             h: 0
-        };
+        },
+        _element = null;
 
     that.addRandomlyPositionedTweet = function(data) {
-        var size = Math.round(10 + (data.user.followers_count / 100));
+        var size = Math.round(9 + (data.user.followers_count / 100));
+        if (size > 200) {
+            size = 200;
+        }
 
         var x = Math.floor(
             Math.random() * $(window).width() - size
@@ -62,9 +66,9 @@ var Engine = (function() {
     that.render = function() {
         var i = _flakes.length;
         while (i--) {
-            if (_flakes[i].isWithinViewport(_viewport)) {
+            //if (_flakes[i].isWithinViewport(_viewport)) {
                 _flakes[i].render();
-            }
+            //}
         }
     }
 
@@ -80,6 +84,7 @@ var Engine = (function() {
 
     that.start = function() {
         _height = $(document).height();
+        _element = $("body");
 
         that.updateViewportCoordinates();
         that.updateViewportDimensions();
@@ -95,7 +100,7 @@ var Engine = (function() {
     }
 
     that.getElement = function() {
-        return $("body");
+        return _element;
     }
 
     return that;

@@ -13,10 +13,35 @@
     font-family:Helvetica;
     background:#000;
     color:#fff;
-    width:300px;
-    padding:0.5em;
+    max-width:400px;
+    padding:0.75em;
     border-radius:18px;
     -moz-border-radius:18px;
+}
+
+.tweet a {
+    text-decoration:none;
+    color:#9DFAF5;
+}
+
+.tweet a:hover {
+    color:#9CD9D6;
+}
+
+.tweet .author {
+    font-weight:bold;
+}
+
+.tweet .hashtag {
+    color:#E01B4C;
+}
+
+.tweet a.url {
+    color:#82D96A;
+}
+
+.tweet a.url:hover {
+    color:#65A852;
 }
 
 @-webkit-keyframes rotate-clockwise {
@@ -39,6 +64,7 @@
 
 .flake
 {
+    /*-webkit-transform: translateZ(0);*/
     -webkit-animation-iteration-count:  infinite;
     -webkit-animation-timing-function: linear;
 }

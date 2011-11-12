@@ -42,7 +42,7 @@ Flake.prototype = {
             "top": this.y,
             "width": this.size,
             "height": this.size,
-            "-webkit-animation-name": "rotate-"+rotationDir,
+            //"-webkit-animation-name": "rotate-"+rotationDir,
             "-webkit-animation-duration": rotationSpeed+"s"
         });
 
@@ -50,6 +50,9 @@ Flake.prototype = {
 
         // wire up hover handlers
         var that = this;
+
+        // we could change this to $("body").delegate(".flake") - might be faster?
+        // but we'll have to attach a reference to our flake somehow if so.
         this.elem.mouseover(function(e) {
             if (!that.isTweetVisible()) {
                 that.showTweet();

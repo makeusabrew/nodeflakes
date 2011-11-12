@@ -7,7 +7,7 @@ var StreamConsumer = function(username, password) {
     var options = {
         host: 'stream.twitter.com',
         port: 443,
-        path: '/1/statuses/filter.json?track=christmas',
+        path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas',
         headers: {
             authorization: auth
         }
@@ -20,6 +20,11 @@ var StreamConsumer = function(username, password) {
         var that = this;
         console.log("connecting to "+options.host+"...");
         https.get(options, function(res) {
+            if (res.statusCode != 200) {
+                console.log("got non OK response code: "+res.statusCode);
+                return;
+            }
+
             var lastChunk = new Date();
             var thisChunk = null;
 
@@ -32,23 +37,28 @@ var StreamConsumer = function(username, password) {
 
                 if (strpos !== -1) {
                     var data = tweet.substr(0, strpos);
+                    if (data.length > 1) {
+                        // temporary rather crude throughput stuff
+                        thisChunk = new Date();
+                        var chunkTime = (thisChunk.getTime() - lastChunk.getTime()) / 1000;
+                        var chunkLength = data.length / 1024;
+                        var throughput = Math.round(chunkLength / chunkTime);
+                        lastChunk = thisChunk;
+                        console.log("sending message ("+throughput+" k/sec)");
 
-                    // temporary rather crude throughput stuff
-                    thisChunk = new Date();
-                    var chunkTime = (thisChunk.getTime() - lastChunk.getTime()) / 1000;
-                    var chunkLength = data.length / 1024;
-                    var throughput = Math.round(chunkLength / chunkTime);
-                    lastChunk = thisChunk;
-                    console.log("sending message ("+throughput+" k/sec)");
+                        // bung the completed tweet on the queue
+                        socket.send(data);
+                    } else {
+                        console.log("ignoring heartbeat "+data.length);
+                    }
 
-                    // bung the completed tweet on the queue
-                    socket.send(data);
                     // make sure we don't lose the remainder
                     tweet = tweet.substr(strpos+1);
                 }
             });
             res.on('end', function() {
                 console.log('end of response');
+                console.log("last chunk: "+tweet);
             });
         });
     }

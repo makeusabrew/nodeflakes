@@ -20,10 +20,10 @@ var StreamProcessor = function() {
                 processed = JSON.parse(data.toString('utf8'));
             } catch (e) {
                 // couldn't parse
-                console.log("parse error");
+                console.log("parse error of: "+data.toString('utf8'));
                 return;
             }
-            try {
+            if (processed.text) {
                 var tweetData = {
                     "text" : processed.text,
                     "entities" : processed.entities,
@@ -32,12 +32,11 @@ var StreamProcessor = function() {
                         "screen_name": processed.user.screen_name
                     }
                 };
-            } catch (e) {
-                // temporary to try and figure out why the above fails sometimes
+                push.send(JSON.stringify(tweetData));
+            } else {
+                console.log("discarding message with bad format");
                 console.log(processed);
-                process.exit(1);
             }
-            push.send(JSON.stringify(tweetData));
         });
     }
 
