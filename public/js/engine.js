@@ -8,6 +8,7 @@ var Engine = (function() {
         _height;
 
     that.addRandomlyPositionedTweet = function(data) {
+        console.log(data.text);
         var size = Math.round(10 + (data.user.followers_count / 100));
 
         var x = Math.floor(
@@ -44,8 +45,11 @@ var Engine = (function() {
             //
             _flakes[i].tick(_delta);
 
-            if (_flakes[i].y > _height) {
-                _flakes[i].kill();
+            if (!_flakes[i].isDying() && _flakes[i].getProjectedBottom(1000) >= _height) {
+                _flakes[i].startDeath(1000);
+            }
+
+            if (_flakes[i].isDead()) {
                 console.log("removing flake ("+i+")");
                 _flakes.splice(i, 1);
             }

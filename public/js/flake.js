@@ -8,6 +8,8 @@ var Flake = function() {
     this.tweet = null;
     this.angle = 0;
     this.rotation = 0;
+    this.dying = false;
+    this.dead = false;
 }
 
 Flake.prototype = {
@@ -55,6 +57,8 @@ Flake.prototype = {
     },
     
     kill: function() {
+        this.dying = false;
+        this.dead = true;
         this.elem.remove();
     },
 
@@ -63,5 +67,29 @@ Flake.prototype = {
             "left": this.x | 0,
             "top": this.y | 0
         });
+    },
+
+    getBottom: function() {
+        return this.y + this.size;
+    },
+
+    isDying: function() {
+        return this.dying;
+    },
+
+    isDead: function() {
+        return this.dead;
+    },
+
+    startDeath: function(fadeTime) {
+        this.dying = true;
+        var that = this;
+        this.elem.fadeOut(fadeTime, function() {
+            that.kill();
+        });
+    },
+    
+    getProjectedBottom: function(msec) {
+        return this.getBottom() + (this.vy * (msec/1000));
     }
 };

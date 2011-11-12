@@ -26,7 +26,6 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
     queue.on('message', function(tweet) {
         console.log("got message");
 
-        // @todo ALL parsing should be done by a worker
         var data = {};
         try {
             data = JSON.parse(tweet);
@@ -34,8 +33,6 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
             console.log("could not parse tweet");
         }
 
-        // @todo ALL tweets should only contain JUST enough information by the time they
-        // get here!
         io.sockets.emit('tweet', data);
     });
 });

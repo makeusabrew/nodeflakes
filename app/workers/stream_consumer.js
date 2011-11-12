@@ -37,7 +37,6 @@ var StreamConsumer = function(username, password) {
             });
             res.on('end', function() {
                 console.log('end of response');
-                res.end();
             });
         });
     }
