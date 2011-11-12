@@ -9,7 +9,8 @@ var express = require('express'),
 app.listen(7979);
 
 app.configure(function() {
-    app.use(express.static(__dirname + '/public'));
+    var oneYear = 31557600000;
+    app.use(express.static(__dirname + '/public', {maxAge: oneYear}));
     app.set('view engine', 'jade');
     app.set('view options', {
         'layout': false
