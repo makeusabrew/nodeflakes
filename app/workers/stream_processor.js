@@ -7,18 +7,26 @@ var StreamProcessor = function() {
             console.log("processing message");
             var processed = null;
             try {
-                processed = JSON.parse(data);
+                processed = JSON.parse(data.toString('utf8'));
             } catch (e) {
                 // couldn't parse
                 console.log("parse error");
                 return;
             }
-            var tweetData = {
-                "text" : processed.text,
-                "user": {
-                    "followers_count": processed.user.followers_count
-                }
-            };
+            try {
+                var tweetData = {
+                    "text" : processed.text,
+                    "entities" : processed.entities,
+                    "user": {
+                        "followers_count": processed.user.followers_count,
+                        "screen_name": processed.user.screen_name
+                    }
+                };
+            } catch (e) {
+                // temporary to try and figure out why the above fails sometimes
+                console.log(processed);
+                process.exit(1);
+            }
             push.send(JSON.stringify(tweetData));
         });
     }
