@@ -106,6 +106,11 @@ Flake.prototype = {
         return this.dead;
     },
 
+    isWithinViewport: function(viewport) {
+        // we only care about y for now
+        return (this.getBottom() >= viewport.y && this.y <= (viewport.y + viewport.h));
+    },
+
     startDeath: function(fadeTime) {
         this.dying = true;
         var that = this;

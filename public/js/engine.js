@@ -5,7 +5,13 @@ var Engine = (function() {
         _delta = 0,
         _lastTick = 0,
         _tickTime = 0,
-        _height;
+        _height = 0,
+        _viewport = {
+            x: 0,
+            y: 0,
+            w: 0,
+            h: 0
+        };
 
     that.addRandomlyPositionedTweet = function(data) {
         var size = Math.round(10 + (data.user.followers_count / 100));
@@ -48,7 +54,6 @@ var Engine = (function() {
             }
 
             if (_flakes[i].isDead()) {
-                console.log("removing flake ("+i+")");
                 _flakes.splice(i, 1);
             }
         }
@@ -57,14 +62,35 @@ var Engine = (function() {
     that.render = function() {
         var i = _flakes.length;
         while (i--) {
-            //
-            _flakes[i].render();
+            if (_flakes[i].isWithinViewport(_viewport)) {
+                _flakes[i].render();
+            }
         }
     }
 
+    that.updateViewportCoordinates = function() {
+        _viewport.x = $(window).scrollLeft();
+        _viewport.y = $(window).scrollTop();
+    }
+
+    that.updateViewportDimensions = function() {
+        _viewport.w = $(window).width();
+        _viewport.h = $(window).height();
+    }
 
     that.start = function() {
         _height = $(document).height();
+
+        that.updateViewportCoordinates();
+        that.updateViewportDimensions();
+
+        $(window).scroll(function(e) {
+            that.updateViewportCoordinates();
+        });
+        $(window).resize(function(e) {
+            that.updateViewportDimensions();
+        });
+
         tick();
     }
 
