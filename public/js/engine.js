@@ -43,8 +43,8 @@ var Engine = (function() {
             //
             _flakes[i].tick(_delta);
 
-            if (!_flakes[i].isDying() && _flakes[i].getProjectedBottom(1000) >= _height) {
-                _flakes[i].startDeath(1000);
+            if (!_flakes[i].isDying() && _flakes[i].getProjectedBottom(2000) >= _height) {
+                _flakes[i].startDeath(2000);
             }
 
             if (_flakes[i].isDead()) {

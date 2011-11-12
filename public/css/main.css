@@ -15,6 +15,30 @@
     color:#fff;
     width:300px;
     padding:0.5em;
-    border-radius:15px;
-    -moz-border-radius:15px;
+    border-radius:18px;
+    -moz-border-radius:18px;
+}
+
+@-webkit-keyframes rotate-clockwise {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to { 
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes rotate-anticlockwise {
+    from {
+        -webkit-transform: rotate(360deg);
+    }
+    to { 
+        -webkit-transform: rotate(0deg);
+    }
+}
+
+.flake
+{
+    -webkit-animation-iteration-count:  infinite;
+    -webkit-animation-timing-function: linear;
 }

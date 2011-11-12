@@ -31,6 +31,9 @@ Flake.prototype = {
         this.vy = -3 + Math.random() * 4;
 
         this.maxVelocity = 10 + Math.random() * 20;
+        
+        var rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
+        var rotationSpeed = 9 + Math.floor(Math.random()*21);
 
         this.elem = $(
             "<img class='flake' src='img/flake.png' alt='' >"
@@ -38,7 +41,9 @@ Flake.prototype = {
             "left": this.x,
             "top": this.y,
             "width": this.size,
-            "height": this.size
+            "height": this.size,
+            "-webkit-animation-name": "rotate-"+rotationDir,
+            "-webkit-animation-duration": rotationSpeed+"s"
         });
 
         Engine.getElement().append(this.elem);
