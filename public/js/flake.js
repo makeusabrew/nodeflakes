@@ -16,15 +16,15 @@ Flake.prototype = {
 
         this.x = options.x;
         this.y = options.y;
+        this.size = options.size;
         this.angle = Math.random() * 2*Math.PI;
 
         // how fast the flake will complete its rotary cycle, e.g. how fast it switches from left to right movement
         this.rotation = 0.05 + Math.random() * 2;
 
         // a little bit of vertical spice
-        this.vy = -2.5 + Math.random() * 4;
+        this.vy = -3 + Math.random() * 4;
 
-        this.size = Math.round(10 + (this.tweet.user.followers_count / 100));
         this.elem = $(
             "<img class='tweet' title='"+this.tweet.text+"' src='img/flake.png' alt='' >"
         ).css({
@@ -47,7 +47,9 @@ Flake.prototype = {
         // @todo move this hard coded acceleration value
         this.vy += 5 * delta;
 
-        // @todo cap vy at some sensible limit
+        if (this.vy > 25) {
+            this.vy = 25;
+        }
 
         this.angle += this.rotation * delta;
     },

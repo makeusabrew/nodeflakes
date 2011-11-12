@@ -7,20 +7,22 @@ var Engine = (function() {
         _tickTime = 0;
 
     that.addRandomlyPositionedTweet = function(data) {
+        var size = Math.round(10 + (data.user.followers_count / 100));
+
         var x = Math.floor(
-            Math.random() * $(window).width()
+            Math.random() * $(document).width() - size
         );
-        var y = Math.floor(
-            Math.random() * ($(window).height() * 0.75)
-        );
+        var y = -(Math.floor(Math.random() * 20) + size);
+
 
         var flake = new Flake();
         flake.spawn({
             "x": x,
             "y": y,
-            "tweet": data
+            "tweet": data,
+            "size": size
         });
-        $("#tweets").append(flake.elem);
+        $("body").append(flake.elem);
 
         _flakes.push(flake);
     }
