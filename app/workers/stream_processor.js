@@ -3,8 +3,18 @@ var pull = null;
 
 var StreamProcessor = function() {
     this.start = function() {
+        var lastChunk = new Date();
+        var thisChunk = null;
+
         pull.on('message', function(data) {
-            console.log("processing message");
+            // temporary rather crude throughput stuff
+            thisChunk = new Date();
+            var chunkTime = (thisChunk.getTime() - lastChunk.getTime()) / 1000;
+            var chunkLength = data.length / 1024;
+            var throughput = Math.round(chunkLength / chunkTime);
+            lastChunk = thisChunk;
+
+            console.log("processing message ("+throughput+" k/sec)");
             var processed = null;
             try {
                 processed = JSON.parse(data.toString('utf8'));

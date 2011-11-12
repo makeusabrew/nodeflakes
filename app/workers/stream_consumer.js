@@ -20,6 +20,9 @@ var StreamConsumer = function(username, password) {
         var that = this;
         console.log("connecting to "+options.host+"...");
         https.get(options, function(res) {
+            var lastChunk = new Date();
+            var thisChunk = null;
+
             console.log("connected!");
 
             res.setEncoding("utf8");
@@ -28,9 +31,18 @@ var StreamConsumer = function(username, password) {
                 strpos = tweet.indexOf("\r");
 
                 if (strpos !== -1) {
+                    var data = tweet.substr(0, strpos);
+
+                    // temporary rather crude throughput stuff
+                    thisChunk = new Date();
+                    var chunkTime = (thisChunk.getTime() - lastChunk.getTime()) / 1000;
+                    var chunkLength = data.length / 1024;
+                    var throughput = Math.round(chunkLength / chunkTime);
+                    lastChunk = thisChunk;
+                    console.log("sending message ("+throughput+" k/sec)");
+
                     // bung the completed tweet on the queue
-                    console.log("sending message");
-                    socket.send(tweet.substr(0, strpos));
+                    socket.send(data);
                     // make sure we don't lose the remainder
                     tweet = tweet.substr(strpos+1);
                 }
