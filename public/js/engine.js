@@ -11,7 +11,7 @@ var Engine = (function() {
         var size = Math.round(10 + (data.user.followers_count / 100));
 
         var x = Math.floor(
-            Math.random() * $(document).width() - size
+            Math.random() * $(window).width() - size
         );
         var y = -(Math.floor(Math.random() * 20) + size);
 
