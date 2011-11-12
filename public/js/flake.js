@@ -12,6 +12,7 @@ var Flake = function() {
     this.dying = false;
     this.dead = false;
     this.tweetVisible = false;
+    this.processedTweet = null;
 }
 
 Flake.prototype = {
@@ -122,7 +123,7 @@ Flake.prototype = {
         var elem = $(
             "<div class='tweet'></div>"
         ).html(
-            this.tweet.text
+            this.renderTweet()
         ).css({
             "left": this.getRight() + 20
         }).hide();
@@ -146,5 +147,64 @@ Flake.prototype = {
                 });
             }, 3000);
         });
+    },
+
+    renderTweet: function() {
+        if (this.processedTweet == null) {
+            var text = this.tweet.text;
+            var str = "<a class='author' href='http://twitter.com/"+this.tweet.user.screen_name+"'>"+this.tweet.user.screen_name+"</a>: ";
+
+            var orderedEntities = [];
+            var entityTypes = ['urls', 'hashtags', 'user_mentions'];
+            var i = entityTypes.length;
+
+            // let's make a flat array of entities
+            while (i--) {
+                var eType = entityTypes[i];
+                var j = this.tweet.entities[eType].length;
+                while (j--) {
+                    var entity = this.tweet.entities[eType][j];
+                    entity.type = eType;
+                    orderedEntities.push(entity);
+                }
+            }
+
+            // get the entities array in ascending order
+            orderedEntities.sort(function(a, b) {
+                return a.indices[0] - b.indices[0];
+            });
+
+            var i = orderedEntities.length;
+            while (i--) {
+                var entity = orderedEntities[i];
+                var start = entity.indices[0];
+                var end = entity.indices[1];
+
+                var insert = "";
+                switch (entity.type) {
+                    case 'urls':
+                        var url = entity.display_url || entity.url
+                        insert = "<a class='url' href='"+entity.url+"'>"+url+"</a>";
+                        break;
+
+                    case 'user_mentions':
+                        insert = "<a class='mention' href='http://twitter.com/"+entity.screen_name+"'>"+text.substring(start, end)+"</a>";
+                        break;
+
+                    case 'hashtags':
+                        insert = "<strong class='hashtag'>"+text.substring(start, end)+"</strong>";
+                        break;
+
+                    default:
+                        break;
+                }
+
+                text = text.substring(0, start) + insert + text.substring(end);
+            }
+            str += text;
+
+            this.processedTweet = str;
+        }
+        return this.processedTweet;
     }
 };
