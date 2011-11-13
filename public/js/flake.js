@@ -36,7 +36,7 @@ Flake.prototype = {
         var rotationSpeed = 9 + Math.floor(Math.random()*21);
 
         this.elem = $(
-            "<img class='flake' src='img/flake.png' alt='' >"
+            "<img class='flake' src='http://localhost:7979/img/flake.png' alt='' >"
         ).css({
             "left": this.x,
             "top": this.y,

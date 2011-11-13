@@ -82,9 +82,18 @@ var Engine = (function() {
         _viewport.h = $(window).height();
     }
 
+    that.addControlPanel = function() {
+        that.getElement().prepend(
+            "<div id='actions'>"+
+                "<a href='#'>Snowflakes On / Off</a>"+
+            "</div>"
+        );
+    }
+
     that.start = function() {
-        _height = $(document).height();
         _element = $("body");
+        that.addControlPanel();
+        _height = $(document).height();
 
         that.updateViewportCoordinates();
         that.updateViewportDimensions();
