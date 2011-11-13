@@ -188,7 +188,7 @@ Flake.prototype = {
                 var j = this.tweet.entities[eType].length;
                 while (j--) {
                     var entity = this.tweet.entities[eType][j];
-                    entity.type = eType;
+                    entity.eType = eType;
                     orderedEntities.push(entity);
                 }
             }
@@ -198,6 +198,8 @@ Flake.prototype = {
                 return a.indices[0] - b.indices[0];
             });
 
+            var photo = null;
+
             var i = orderedEntities.length;
             while (i--) {
                 var entity = orderedEntities[i];
@@ -205,7 +207,7 @@ Flake.prototype = {
                 var end = entity.indices[1];
 
                 var insert = "";
-                switch (entity.type) {
+                switch (entity.eType) {
                     case 'urls':
                         var url = entity.display_url || entity.url
                         insert = "<a class='url' href='"+entity.url+"'>"+url+"</a>";
@@ -214,6 +216,10 @@ Flake.prototype = {
                     case 'media':
                         var url = entity.display_url || entity.media_url
                         insert = "<a class='url' href='"+entity.media_url+"'>"+url+"</a>";
+
+                        if (entity.type == 'photo' && photo == null) {
+                            photo = "<img class='photo' src='"+entity.media_url+":thumb' alt='' />";
+                        }
                         break;
 
                     case 'user_mentions':
@@ -231,6 +237,10 @@ Flake.prototype = {
                 text = text.substring(0, start) + insert + text.substring(end);
             }
             str += text;
+
+            if (photo) {
+                str = photo+str;
+            }
 
             this.processedTweet = str;
         }
