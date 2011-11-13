@@ -35,8 +35,13 @@ Flake.prototype = {
         var rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
         var rotationSpeed = 9 + Math.floor(Math.random()*21);
 
+        var img = 'flake.png';
+        if (this.tweet.text.search(/#nodeflakes/i) != -1) {
+            img = 'nodeflake.png';
+        }
+
         this.elem = $(
-            "<img class='flake' src='http://localhost:7979/img/flake.png' alt='' >"
+            "<img class='flake' src='http://localhost:7979/img/"+img+"' alt='' >"
         ).css({
             "left": this.x,
             "top": this.y,
