@@ -7,7 +7,7 @@ var StreamConsumer = function(username, password) {
     var options = {
         host: 'stream.twitter.com',
         port: 443,
-        path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas',
+        path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas,christmas%20presents,merry%20xmas,love%20christmas',
         headers: {
             authorization: auth
         }
