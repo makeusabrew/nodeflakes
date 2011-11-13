@@ -19,6 +19,11 @@ app.configure(function() {
     });
 });
 
+io.configure(function() {
+    //io.set('transports', ['websocket']);
+    io.set('log level', 2); // info
+});
+
 require('./app/routes')(app);
 
 var queue = zmq.createSocket('pull');

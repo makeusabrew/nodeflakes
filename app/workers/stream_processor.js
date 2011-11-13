@@ -29,8 +29,10 @@ var StreamProcessor = function() {
                 
             var filter = new RegExp("fuck|shit|bollocks|dick|pussy|cunt", "i");
 
-            if (filter.test(processed.text)) {
-                console.log("discarding tweet due to profanity filter");
+            var fullTweet = processed.user.screen_name+": "+processed.text;
+
+            if (filter.test(fullTweet)) {
+                console.log("discarding tweet due to profanity filter: ["+fullTweet+"]");
                 return;
             }
 
