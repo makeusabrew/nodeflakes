@@ -23,8 +23,10 @@ var Engine = (function() {
         var x = Math.floor(
             Math.random() * $(window).width() - size
         );
-        var y = -(Math.floor(Math.random() * 20) + size);
 
+        // we used to make Y a bit random, but if users are looking out for their tweets
+        // then having a negative Y makes things look less realtime
+        var y = -size;
 
         var flake = new Flake();
         flake.spawn({

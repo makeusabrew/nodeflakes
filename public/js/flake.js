@@ -28,7 +28,8 @@ Flake.prototype = {
         this.rotation = 0.02 + Math.random() * 1.5;
 
         // a little bit of vertical spice
-        this.vy = -3 + Math.random() * 4;
+        // we've de-spiced a lot so users can see their tweets quicker. Boring.
+        this.vy = -1 + Math.random() * 2;
 
         this.maxVelocity = 10 + Math.random() * 20;
         
