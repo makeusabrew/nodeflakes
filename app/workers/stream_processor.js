@@ -36,6 +36,10 @@ var StreamProcessor = function() {
                 return;
             }
 
+            // @todo any spam filtering here?
+            
+            // @todo move entity processing here and reduce the amount of entity data we pass on
+
             var tweetData = {
                 "text" : processed.text,
                 "entities" : processed.entities,
