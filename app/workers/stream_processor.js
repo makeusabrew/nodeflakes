@@ -27,7 +27,7 @@ var StreamProcessor = function() {
                 return;
             }
                 
-            var filter = new RegExp("fuck|shit|bollocks|\bdick\b|pussy|\bcunt\b|\bporn\b|\bsex\b", "i");
+            var filter = new RegExp("fuck|shit|bollocks|\bdick\b|pussy|cunt|\bporn\b|\bsex\b", "i");
 
             var fullTweet = processed.user.screen_name+": "+processed.text;
 
