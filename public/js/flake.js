@@ -25,7 +25,7 @@ Flake.prototype = {
         this.angle = Math.random() * 2*Math.PI;
 
         // how fast the flake will complete its rotary cycle, e.g. how fast it switches from left to right movement
-        this.rotation = 0.05 + Math.random() * 2;
+        this.rotation = 0.02 + Math.random() * 1.5;
 
         // a little bit of vertical spice
         this.vy = -3 + Math.random() * 4;
@@ -168,12 +168,17 @@ Flake.prototype = {
             var str = "<a class='author' href='http://twitter.com/"+this.tweet.user.screen_name+"'>"+this.tweet.user.screen_name+"</a>: ";
 
             var orderedEntities = [];
-            var entityTypes = ['urls', 'hashtags', 'user_mentions'];
+            var entityTypes = ['urls', 'media', 'hashtags', 'user_mentions'];
             var i = entityTypes.length;
 
             // let's make a flat array of entities
             while (i--) {
                 var eType = entityTypes[i];
+                if (typeof this.tweet.entities[eType] == 'undefined') {
+                    // media is a new entity so isn't always present
+                    continue;
+                }
+
                 var j = this.tweet.entities[eType].length;
                 while (j--) {
                     var entity = this.tweet.entities[eType][j];
@@ -198,6 +203,11 @@ Flake.prototype = {
                     case 'urls':
                         var url = entity.display_url || entity.url
                         insert = "<a class='url' href='"+entity.url+"'>"+url+"</a>";
+                        break;
+
+                    case 'media':
+                        var url = entity.display_url || entity.media_url
+                        insert = "<a class='url' href='"+entity.media_url+"'>"+url+"</a>";
                         break;
 
                     case 'user_mentions':

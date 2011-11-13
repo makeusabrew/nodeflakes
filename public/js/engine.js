@@ -15,7 +15,7 @@ var Engine = (function() {
         _element = null;
 
     that.addRandomlyPositionedTweet = function(data) {
-        var size = Math.round(9 + (data.user.followers_count / 100));
+        var size = Math.round(10 + (data.user.followers_count / 100));
         if (size > 200) {
             size = 200;
         }
