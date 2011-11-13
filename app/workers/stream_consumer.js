@@ -1,5 +1,7 @@
 var https = require('https');
 
+var Throughput = require('../throughput');
+
 var socket = null;
 
 var StreamConsumer = function(username, password) {
@@ -25,8 +27,7 @@ var StreamConsumer = function(username, password) {
                 return;
             }
 
-            var lastChunk = new Date();
-            var thisChunk = null;
+            var throughput = new Throughput();
 
             console.log("connected!");
 
@@ -38,13 +39,8 @@ var StreamConsumer = function(username, password) {
                 if (strpos !== -1) {
                     var data = tweet.substr(0, strpos);
                     if (data.length > 1) {
-                        // temporary rather crude throughput stuff
-                        thisChunk = new Date();
-                        var chunkTime = (thisChunk.getTime() - lastChunk.getTime()) / 1000;
-                        var chunkLength = data.length / 1024;
-                        var throughput = Math.round(chunkLength / chunkTime);
-                        lastChunk = thisChunk;
-                        console.log("sending message ("+throughput+" k/sec)");
+                        var rate = throughput.measure(data);
+                        console.log("sending message ("+rate.value+" "+rate.unit+")");
 
                         // bung the completed tweet on the queue
                         socket.send(data);

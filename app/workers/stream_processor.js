@@ -1,5 +1,9 @@
+var Throughput = require('../throughput');
+
 var push = null;
 var pull = null;
+
+var throughput = new Throughput();
 
 var StreamProcessor = function() {
     this.start = function() {
@@ -7,14 +11,8 @@ var StreamProcessor = function() {
         var thisChunk = null;
 
         pull.on('message', function(data) {
-            // temporary rather crude throughput stuff
-            thisChunk = new Date();
-            var chunkTime = (thisChunk.getTime() - lastChunk.getTime()) / 1000;
-            var chunkLength = data.length / 1024;
-            var throughput = Math.round(chunkLength / chunkTime);
-            lastChunk = thisChunk;
-
-            console.log("processing message ("+throughput+" k/sec)");
+            var rate = throughput.measure(data);
+            console.log("processing message ("+rate.value+" "+rate.unit+")");
             var processed = null;
             try {
                 processed = JSON.parse(data.toString('utf8'));

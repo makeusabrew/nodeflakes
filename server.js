@@ -6,6 +6,8 @@ var express = require('express'),
     fs      = require('fs'),
     zmq     = require('zmq');
 
+var Throughput = require('./app/throughput');
+
 app.listen(7979);
 
 app.configure(function() {
@@ -21,11 +23,18 @@ require('./app/routes')(app);
 
 var queue = zmq.createSocket('pull');
 
+var throughput = new Throughput();
+var lastChunk = new Date();
+var thisChunk = null;
+
+
 queue.bind('tcp://127.0.0.1:5556', function(err) {
     if (err) throw err;
     console.log('bound ZMQ pull server');
     queue.on('message', function(data) {
-        console.log("got message");
+
+        var rate = throughput.measure(data);
+        console.log("got message ("+rate.value+" "+rate.unit+")");
 
         /*
         don't parse the data, assume it's valid
