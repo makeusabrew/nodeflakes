@@ -21,20 +21,28 @@ var StreamProcessor = function() {
                 console.log("parse error of: "+data.toString('utf8'));
                 return;
             }
-            if (processed.text) {
-                var tweetData = {
-                    "text" : processed.text,
-                    "entities" : processed.entities,
-                    "user": {
-                        "followers_count": processed.user.followers_count,
-                        "screen_name": processed.user.screen_name
-                    }
-                };
-                push.send(JSON.stringify(tweetData));
-            } else {
-                console.log("discarding message with bad format");
+            if (processed.text == null) {
+                console.log("discarding message with bad format - assuming delete or rate limit info");
                 console.log(processed);
+                return;
             }
+                
+            var filter = new RegExp("fuck|shit|bollocks|dick|pussy|cunt", "i");
+
+            if (filter.test(processed.text)) {
+                console.log("discarding tweet due to profanity filter");
+                return;
+            }
+
+            var tweetData = {
+                "text" : processed.text,
+                "entities" : processed.entities,
+                "user": {
+                    "followers_count": processed.user.followers_count,
+                    "screen_name": processed.user.screen_name
+                }
+            };
+            push.send(JSON.stringify(tweetData));
         });
     }
 
