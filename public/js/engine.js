@@ -114,6 +114,10 @@ var Engine = (function() {
         return _element;
     }
 
+    that.getViewport = function() {
+        return _viewport;
+    }
+
     return that;
 })();
 

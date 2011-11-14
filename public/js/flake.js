@@ -143,15 +143,33 @@ Flake.prototype = {
             "<div class='tweet'></div>"
         ).html(
             this.renderTweet()
-        ).css({
-            "left": this.getRight() + 20
-        }).hide();
+        ).hide();
 
         Engine.getElement().append(elem);
 
-        elem.css({
-            "top":  this.y + (this.size / 2) - (elem.height() / 2)
-        });
+        var position = {
+            "left": 0,
+            "top" : 0
+        };
+
+        // ensure tweet is rendered within bounds
+
+        // ideally we want the tweet to render half way down the flake
+        var idealTop = this.y + (this.size / 2) - (elem.height() / 2);
+        if (idealTop >= 0) {
+            // but only if it keeps the whole tweet on screen
+            position.top = idealTop;
+        }
+
+        // by default we want to render the tweet 20px to the right of the flake
+        if (this.getRight() + elem.width() + 20 < Engine.getViewport().x + Engine.getViewport().w) {
+            position.left = this.getRight() + 20;
+        } else {
+            // but if that's not possible, settle for left instead
+            position.left = this.x - 20 - elem.width();
+        }
+
+        elem.css(position);
 
         // this looks worse than it is, it's just a chain of callbacks to
         // 1. show the tweet
