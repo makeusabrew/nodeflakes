@@ -39,10 +39,35 @@ var StreamProcessor = function() {
             // @todo any spam filtering here?
             
             // @todo move entity processing here and reduce the amount of entity data we pass on
+            var orderedEntities = [];
+            var entityTypes = ['urls', 'media', 'hashtags', 'user_mentions'];
+            var i = entityTypes.length;
+
+            // let's make a flat array of entities
+            while (i--) {
+                var eType = entityTypes[i];
+                if (typeof processed.entities[eType] == 'undefined') {
+                    // media is a new entity so isn't always present
+                    continue;
+                }
+
+                var j = processed.entities[eType].length;
+                while (j--) {
+                    var entity = processed.entities[eType][j];
+                    entity.eType = eType;
+                    orderedEntities.push(entity);
+                }
+            }
+
+            // get the entities array in ascending order
+            orderedEntities.sort(function(a, b) {
+                return a.indices[0] - b.indices[0];
+            });
+
 
             var tweetData = {
                 "text" : processed.text,
-                "entities" : processed.entities,
+                "entities" : orderedEntities,
                 "user": {
                     "followers_count": processed.user.followers_count,
                     "screen_name": processed.user.screen_name

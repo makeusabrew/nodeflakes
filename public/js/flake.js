@@ -191,36 +191,11 @@ Flake.prototype = {
             var text = this.tweet.text;
             var str = "<a class='author' href='http://twitter.com/"+this.tweet.user.screen_name+"'>"+this.tweet.user.screen_name+"</a>: ";
 
-            var orderedEntities = [];
-            var entityTypes = ['urls', 'media', 'hashtags', 'user_mentions'];
-            var i = entityTypes.length;
-
-            // let's make a flat array of entities
-            while (i--) {
-                var eType = entityTypes[i];
-                if (typeof this.tweet.entities[eType] == 'undefined') {
-                    // media is a new entity so isn't always present
-                    continue;
-                }
-
-                var j = this.tweet.entities[eType].length;
-                while (j--) {
-                    var entity = this.tweet.entities[eType][j];
-                    entity.eType = eType;
-                    orderedEntities.push(entity);
-                }
-            }
-
-            // get the entities array in ascending order
-            orderedEntities.sort(function(a, b) {
-                return a.indices[0] - b.indices[0];
-            });
-
             var photo = null;
 
-            var i = orderedEntities.length;
+            var i = this.tweet.entities.length;
             while (i--) {
-                var entity = orderedEntities[i];
+                var entity = this.tweet.entities[i];
                 var start = entity.indices[0];
                 var end = entity.indices[1];
 
