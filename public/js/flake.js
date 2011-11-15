@@ -60,9 +60,11 @@ Flake.prototype = {
 
         if (this.tweet.text.search(/#nodeflakes/i) != -1) {
             if (this.size < 20) {
+                this.y -= 20 - this.size;
                 this.size = 20;
             }
             img = 'nodeflake.png';
+            SoundManager.playSound('nodeflake');
         } else if (this.size < 17) {
             img = images.small[Math.floor(Math.random() * images.small.length)];
         } else if (this.size < 49) {
