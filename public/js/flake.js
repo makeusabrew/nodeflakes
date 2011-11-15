@@ -36,9 +36,39 @@ Flake.prototype = {
         var rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
         var rotationSpeed = 9 + Math.floor(Math.random()*21);
 
-        var img = 'flake.png';
+        var img = null;
+        var images = {
+            "small": [
+                "flake_10_3.png",
+                "flake_16_1.png",
+                "flake_16_2.png",
+                "flake_16_3.png"
+            ],
+            "medium": [
+                "flake_32_1.png",
+                "flake_32_2.png",
+                "flake_48_1.png",
+                "flake_48_2.png",
+                "flake_48_3.png"
+            ],
+            "large": [
+                "flake_128_1.png",
+                "flake_128_2.png",
+                "flake_128_3.png"
+            ]
+        };
+
         if (this.tweet.text.search(/#nodeflakes/i) != -1) {
+            if (this.size < 20) {
+                this.size = 20;
+            }
             img = 'nodeflake.png';
+        } else if (this.size < 17) {
+            img = images.small[Math.floor(Math.random() * images.small.length)];
+        } else if (this.size < 49) {
+            img = images.medium[Math.floor(Math.random() * images.medium.length)];
+        } else {
+            img = images.large[Math.floor(Math.random() * images.large.length)];
         }
 
         this.elem = $(

@@ -32,10 +32,10 @@ $(function() {
         var data = {};
         try {
             data = JSON.parse(tweet);
+            Engine.addRandomlyPositionedTweet(data);
         } catch (e) {
             console.log("could not parse tweet");
         }
-        Engine.addRandomlyPositionedTweet(data);
     });
 
     Engine.start();
