@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden; /* @todo improve this */
+}
+
 .flake,
 .tweet {
     position:absolute;
