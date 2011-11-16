@@ -71,7 +71,7 @@
 
 .flake
 {
-    /*-webkit-transform: translateZ(0);*/
+    -webkit-transform: translateZ(0);
     -webkit-animation-iteration-count:  infinite;
     -webkit-animation-timing-function: linear;
 }

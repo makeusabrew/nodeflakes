@@ -80,7 +80,7 @@ Flake.prototype = {
             "top": this.y,
             "width": this.size,
             "height": this.size,
-            //"-webkit-animation-name": "rotate-"+rotationDir,
+            "-webkit-animation-name": "rotate-"+rotationDir,
             "-webkit-animation-duration": rotationSpeed+"s"
         });
 
