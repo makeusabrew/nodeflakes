@@ -20,15 +20,11 @@ var SoundManager = (function() {
 
     self.preloadSound = function(path, alias) {
         if (_loadedSounds[path] == null) {
-            var sound = document.createElement("audio");
-            sound.src = path;
-            sound.preload = 'auto';
+
+            var sound = new Audio(path);
+            sound.load();
 
             _loadedSounds[path] = sound;
-            // attach to dom to actually load the clip
-            $("body").append(sound);
-
-            _loadedSounds[path].load();
         } else {
             console.log("not preloading sound - already loaded ["+path+"]");
         }

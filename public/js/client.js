@@ -39,5 +39,7 @@ $(function() {
     });
 
     SoundManager.preloadSound("http://localhost:7979/sounds/hallelujah.mp3", "nodeflake");
+    SoundManager.playSound('nodeflake');
+    SoundManager.pauseSound('nodeflake');
     Engine.start();
 });
