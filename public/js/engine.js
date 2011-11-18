@@ -12,7 +12,8 @@ var Engine = (function(win, doc) {
             w: 0,
             h: 0
         },
-        _element = null;
+        _element = null,
+        _win = $(win);
 
     that.addRandomlyPositionedTweet = function(data) {
         var size = Math.round(10 + (data.user.followers_count / 100));
@@ -21,7 +22,7 @@ var Engine = (function(win, doc) {
         }
 
         var x = Math.floor(
-            Math.random() * $(win).width() - size
+            Math.random() * _win.width() - size
         );
 
         // we used to make Y a bit random, but if users are looking out for their tweets
@@ -75,14 +76,11 @@ var Engine = (function(win, doc) {
         }
     }
 
-    that.updateViewportCoordinates = function() {
-        _viewport.x = $(win).scrollLeft();
-        _viewport.y = $(win).scrollTop();
-    }
-
-    that.updateViewportDimensions = function() {
-        _viewport.w = $(win).width();
-        _viewport.h = $(win).height();
+    that.updateViewport = function() {
+        _viewport.x = _win.scrollLeft();
+        _viewport.y = _win.scrollTop();
+        _viewport.w = _win.width();
+        _viewport.h = _win.height();
     }
 
     that.addControlPanel = function() {
@@ -98,14 +96,13 @@ var Engine = (function(win, doc) {
         that.addControlPanel();
         _height = $(doc).height();
 
-        that.updateViewportCoordinates();
-        that.updateViewportDimensions();
+        that.updateViewport();
 
-        $(win).scroll(function(e) {
-            that.updateViewportCoordinates();
+        _win.scroll(function(e) {
+            that.updateViewport();
         });
-        $(win).resize(function(e) {
-            that.updateViewportDimensions();
+        _win.resize(function(e) {
+            that.updateViewport();
         });
 
         tick();
