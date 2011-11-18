@@ -13,6 +13,12 @@ var Engine = (function(win, doc) {
             h: 0
         },
         _element = null,
+        _settings = {
+            snowflakes: true,
+            sounds: true,
+            animations: true,
+            acceleration: true
+        },
         _win = $(win);
 
     that.addRandomlyPositionedTweet = function(data) {
@@ -51,6 +57,9 @@ var Engine = (function(win, doc) {
     }
 
     that.tick = function() {
+        if (!_settings.snowflakes) {
+            return;
+        }
         var i = _flakes.length,
             flake;
         while (i--) {
@@ -86,9 +95,61 @@ var Engine = (function(win, doc) {
     that.addControlPanel = function() {
         that.getElement().prepend(
             "<div id='actions'>"+
-                "<a href='#'>Snowflakes On / Off</a>"+
+                "<a class='snowflakes' href='#'>Snowflakes: <span>On</span></a>"+
+                "<a class='sounds' href='#'>Sounds: <span>On</span></a>"+
+                "<a class='animations' href='#'>CSS Animations: <span>On</span></a>"+
+                "<a class='acceleration' href='#'>3D Acceleration: <span>On</span></a>"+
             "</div>"
         );
+        $("#actions a").click(function(e) {
+            var setting = $(this).attr('class');
+            _settings[setting] = !_settings[setting];
+            var enabled = _settings[setting];
+            
+            switch (setting) {
+                case 'snowflakes':
+                    if (enabled) {
+                        Client.reconnect();
+                        $(".flake").show();
+                    } else {
+                        Client.disconnect();
+                        $(".flake").hide();
+                    }
+                    break;
+
+                case 'sounds':
+                    if (enabled) {
+                        SoundManager.unmute();
+                    } else {
+                        SoundManager.mute();
+                    }
+                    break;
+
+                case 'animations':
+                    if (enabled) {
+                        var j = _flakes.length;
+                        while (j--) {
+                            _flakes[j].animate();
+                        }
+                    } else {
+                        $(".flake").removeClass("animated").css({
+                            "-webkit-animation-name": "",
+                            "-webkit-animation-duration":""
+                        });
+                    }
+                    break;
+
+                case 'acceleration':
+                    if (enabled) {
+                        $(".flake").addClass("threedee");
+                    } else {
+                        $(".flake").removeClass("threedee");
+                    }
+                    break;
+            }
+
+            $(this).children("span").html(enabled ? "On" : "Off");
+        });
     }
 
     that.start = function() {
@@ -114,6 +175,14 @@ var Engine = (function(win, doc) {
 
     that.getViewport = function() {
         return _viewport;
+    }
+
+    that.setSocket = function(socket) {
+        _socket = socket;
+    }
+
+    that.setting = function(setting) {
+        return !!_settings[setting];
     }
 
     return that;

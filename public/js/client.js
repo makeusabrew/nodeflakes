@@ -19,27 +19,50 @@ window.cancelRequestAnimFrame = ( function() {
         clearTimeout
 })();
 
-var socket = null;
+
+var Client = (function() {
+    var socket = null;
+    var that = {};
+
+    that.connect = function() {
+        socket = io.connect("http://localhost", {port:7979});
+
+        socket.on('connect', function() {
+            console.log("connected");
+            socket.on('tweet', function(tweet) {
+                var data = null;
+                try {
+                    data = JSON.parse(tweet);
+                } catch (e) {
+                    console.log("could not parse tweet: "+tweet);
+                }
+                if (data) {
+                    Engine.addRandomlyPositionedTweet(data);
+                }
+            });
+        });
+    }
+
+    that.reconnect = function() {
+        socket.socket.reconnect();
+    }
+
+    that.disconnect = function() {
+        socket.disconnect();
+        socket.removeAllListeners('tweet');
+    }
+
+    return that;
+
+})();
 
 $(function() {
-    socket = io.connect("http://localhost", {port:7979});
 
-    socket.on('connect', function() {
-        console.log('connected');
-    });
-
-    socket.on('tweet', function(tweet) {
-        var data = {};
-        try {
-            data = JSON.parse(tweet);
-            Engine.addRandomlyPositionedTweet(data);
-        } catch (e) {
-            console.log("could not parse tweet");
-        }
-    });
+    Client.connect();
 
     SoundManager.preloadSound("http://localhost:7979/sounds/hallelujah.mp3", "nodeflake");
     SoundManager.playSound('nodeflake');
     SoundManager.pauseSound('nodeflake');
+
     Engine.start();
 });

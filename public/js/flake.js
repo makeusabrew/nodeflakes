@@ -10,6 +10,8 @@ var Flake = function() {
     this.tweet = null;
     this.angle = 0;
     this.rotation = 0;
+    this.rotationDir = "";
+    this.rotationSpeed = 0;
     this.dying = false;
     this.dead = false;
     this.tweetVisible = false;
@@ -33,10 +35,10 @@ Flake.prototype = {
         this.vy = -1 + Math.random() * 2;
 
         this.maxVelocity = 10 + Math.random() * 20;
-        
-        var rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
-        var rotationSpeed = 9 + Math.floor(Math.random()*21);
+        this.rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
+        this.rotationSpeed = 9 + Math.floor(Math.random()*21);
 
+        
         var img = null;
         var images = {
             "small": [
@@ -81,9 +83,15 @@ Flake.prototype = {
             "top": this.y,
             "width": this.size,
             "height": this.size,
-            "-webkit-animation-name": "rotate-"+rotationDir,
-            "-webkit-animation-duration": rotationSpeed+"s"
         });
+        
+        if (Engine.setting('animations')) {
+            this.animate();
+        }
+
+        if (Engine.setting('acceleration')) {
+            this.elem.addClass('threedee');
+        }
 
 
         Engine.getElement().append(this.elem);
@@ -100,6 +108,13 @@ Flake.prototype = {
             }
         });
 
+    },
+
+    animate: function() {
+        this.elem.css({
+            "-webkit-animation-name": "rotate-"+this.rotationDir,
+            "-webkit-animation-duration": this.rotationSpeed+"s"
+        }).addClass("animated");
     },
 
     tick: function(delta) {

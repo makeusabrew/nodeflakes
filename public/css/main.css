@@ -75,23 +75,33 @@ body {
 
 .flake
 {
+}
+
+.threedee {
     -webkit-transform: translateZ(0);
+}
+
+.animated {
     -webkit-animation-iteration-count:  infinite;
     -webkit-animation-timing-function: linear;
 }
 
 #actions {
-    opacity:0.8;
+    opacity:0.9;
     position:fixed;
     bottom:0;
     right:0;
-    padding:0.75em 1em;
-    border-top-left-radius:18px;
-    -moz-border-top-left-radius:18px;
-    background:#333;
+    padding:0.25em;
+    border-top-left-radius:11px;
+    -moz-border-top-left-radius:11px;
+    background:#222;
     color:#fff;
 }
 
 #actions a {
     color:#fff;
+    text-decoration:none;
+    margin: 1em;
 }
+
+
