@@ -1,4 +1,4 @@
-var Engine = (function() {
+var Engine = (function(win, doc) {
     var that = {};
 
     var _flakes = [],
@@ -21,7 +21,7 @@ var Engine = (function() {
         }
 
         var x = Math.floor(
-            Math.random() * $(window).width() - size
+            Math.random() * $(win).width() - size
         );
 
         // we used to make Y a bit random, but if users are looking out for their tweets
@@ -50,16 +50,17 @@ var Engine = (function() {
     }
 
     that.tick = function() {
-        var i = _flakes.length;
+        var i = _flakes.length,
+            flake;
         while (i--) {
-            //
-            _flakes[i].tick(_delta);
+            flake = _flakes[i];
+            flake.tick(_delta);
 
-            if (!_flakes[i].isDying() && _flakes[i].getProjectedBottom(2000) >= _height) {
-                _flakes[i].startDeath(2000);
+            if (!flake.isDying() && flake.getProjectedBottom(2000) >= _height) {
+                flake.startDeath(2000);
             }
 
-            if (_flakes[i].isDead()) {
+            if (flake.isDead()) {
                 _flakes.splice(i, 1);
             }
         }
@@ -75,13 +76,13 @@ var Engine = (function() {
     }
 
     that.updateViewportCoordinates = function() {
-        _viewport.x = $(window).scrollLeft();
-        _viewport.y = $(window).scrollTop();
+        _viewport.x = $(win).scrollLeft();
+        _viewport.y = $(win).scrollTop();
     }
 
     that.updateViewportDimensions = function() {
-        _viewport.w = $(window).width();
-        _viewport.h = $(window).height();
+        _viewport.w = $(win).width();
+        _viewport.h = $(win).height();
     }
 
     that.addControlPanel = function() {
@@ -95,15 +96,15 @@ var Engine = (function() {
     that.start = function() {
         _element = $("body");
         that.addControlPanel();
-        _height = $(document).height();
+        _height = $(doc).height();
 
         that.updateViewportCoordinates();
         that.updateViewportDimensions();
 
-        $(window).scroll(function(e) {
+        $(win).scroll(function(e) {
             that.updateViewportCoordinates();
         });
-        $(window).resize(function(e) {
+        $(win).resize(function(e) {
             that.updateViewportDimensions();
         });
 
@@ -119,7 +120,7 @@ var Engine = (function() {
     }
 
     return that;
-})();
+})(this, document);
 
 var animFrame = null;
 
