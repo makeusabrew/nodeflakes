@@ -1,4 +1,5 @@
 var Throughput = require('../throughput');
+require('colors');
 
 var push = null;
 var pull = null;
@@ -22,7 +23,7 @@ var StreamProcessor = function() {
                 return;
             }
             if (processed.text == null) {
-                console.log("discarding message with bad format - assuming delete or rate limit info");
+                console.log("discarding message with bad format - assuming delete or rate limit info".bold);
                 console.log(processed);
                 return;
             }
@@ -32,13 +33,10 @@ var StreamProcessor = function() {
             var fullTweet = processed.user.screen_name+": "+processed.text;
 
             if (filter.test(fullTweet)) {
-                console.log("discarding tweet due to profanity filter: ["+fullTweet+"]");
+                console.log("PROFANITY FILTER:".red+" ["+fullTweet+"]");
                 return;
             }
 
-            // @todo any spam filtering here?
-            
-            // @todo move entity processing here and reduce the amount of entity data we pass on
             var orderedEntities = [];
             var entityTypes = ['urls', 'media', 'hashtags', 'user_mentions'];
             var i = entityTypes.length;
@@ -52,6 +50,24 @@ var StreamProcessor = function() {
                 }
 
                 var j = processed.entities[eType].length;
+
+                var matchDups = false;
+                if (eType == 'urls') {
+                    // spam stuff
+                    if (j >= 4) {
+                        console.log("SPAM FILTER:".yellow+" excessive link volume ("+j+"): "+fullTweet);
+                        return;
+                    } else if (j == 3 && processed.user.followers_count < 50 ||
+                               j == 2 && processed.user.followers_count < 10 ||
+                               j == 1 && processed.user.followers_count == 0) {
+
+                        console.log("SPAM FILTER:".yellow+" excessive link Vs follower count ("+j+" Vs "+processed.user.followers_count+"): "+fullTweet);
+                        return;
+
+                    } else if (j >= 2) {
+                        matchDups = true;
+                    }
+                }
                 while (j--) {
                     var entity = processed.entities[eType][j];
                     entity.eType = eType;
@@ -63,7 +79,6 @@ var StreamProcessor = function() {
             orderedEntities.sort(function(a, b) {
                 return a.indices[0] - b.indices[0];
             });
-
 
             var tweetData = {
                 "text" : processed.text,
