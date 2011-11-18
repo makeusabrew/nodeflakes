@@ -6,6 +6,7 @@ var Flake = function() {
     this.maxVelocity = 0;
     this.size = 0;
     this.elem = null;
+    this.position = null;
     this.tweet = null;
     this.angle = 0;
     this.rotation = 0;
@@ -84,7 +85,9 @@ Flake.prototype = {
             "-webkit-animation-duration": rotationSpeed+"s"
         });
 
+
         Engine.getElement().append(this.elem);
+        this.position = this.elem.get(0).style;
 
         // wire up hover handlers
         var that = this;
@@ -125,10 +128,8 @@ Flake.prototype = {
     },
 
     render: function() {
-        this.elem.css({
-            "left": this.x | 0,
-            "top": this.y | 0
-        });
+        this.position.left = (this.x | 0) + "px";
+        this.position.top = (this.y | 0) + "px";
     },
 
     getBottom: function() {
