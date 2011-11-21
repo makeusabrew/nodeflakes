@@ -81,6 +81,7 @@ var StreamProcessor = function() {
             });
 
             var tweetData = {
+                "id" : processed.id,
                 "text" : processed.text,
                 "entities" : orderedEntities,
                 "user": {

@@ -29,8 +29,7 @@ require('./app/routes')(app);
 var queue = zmq.createSocket('pull');
 
 var throughput = new Throughput();
-var lastChunk = new Date();
-var thisChunk = null;
+var handled = {};
 
 
 queue.bind('tcp://127.0.0.1:5556', function(err) {
@@ -51,6 +50,18 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
             console.log("could not parse tweet");
         }
         */
+        var tweet = {};
+        try {
+            tweet = JSON.parse(data);
+        } catch (e) {
+            console.log("could not parse tweet");
+            return;
+        }
+        if (handled[tweet.id] != null) {
+            console.log("ignoring duplicate tweet ["+tweet.id+"]");
+            return;
+        }
+        handled[tweet.id] = true;
 
         io.sockets.emit('tweet', data.toString('utf8'));
     });

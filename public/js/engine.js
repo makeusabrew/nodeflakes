@@ -177,10 +177,6 @@ var Engine = (function(win, doc) {
         return _viewport;
     }
 
-    that.setSocket = function(socket) {
-        _socket = socket;
-    }
-
     that.setting = function(setting) {
         return !!_settings[setting];
     }
