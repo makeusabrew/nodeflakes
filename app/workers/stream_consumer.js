@@ -9,9 +9,9 @@ var StreamConsumer = function(username, password) {
     var options = {
         host: 'stream.twitter.com',
         port: 443,
-        path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas,christmas%20presents,merry%20xmas,love%20christmas,christmas%20songs,nodeflakes',
+        //path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas,christmas%20presents,merry%20xmas,love%20christmas,christmas%20songs,nodeflakes',
         // for hardcore flake action, use the tracker below instead!
-        //path: '/1/statuses/filter.json?track=christmas',
+        path: '/1/statuses/filter.json?track=christmas',
         headers: {
             authorization: auth
         }

@@ -40,16 +40,8 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
         var rate = throughput.measure(data);
         console.log("got message ("+rate.value+" "+rate.unit+")");
 
-        /*
-        don't parse the data, assume it's valid
-        let the client parse instead, put the burden on them
-        var data = {};
-        try {
-            data = JSON.parse(tweet);
-        } catch (e) {
-            console.log("could not parse tweet");
-        }
-        */
+        // @todo ideally we wouldn't parse the inbound data *just* to get the tweet ID. Perhaps
+        // the processor daemons can put a delemited message on instead?
         var tweet = {};
         try {
             tweet = JSON.parse(data);

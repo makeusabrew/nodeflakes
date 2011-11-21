@@ -77,12 +77,14 @@ Flake.prototype = {
         }
 
         this.elem = $(
-            "<img class='flake' src='http://localhost:7979/img/"+img+"' alt='' >"
+            //"<img class='flake' src='http://localhost:7979/img/"+img+"' alt='' >"
+            "<div class='flake'>*</div>"
         ).css({
             "left": this.x,
             "top": this.y,
-            "width": this.size,
-            "height": this.size,
+            //"width": this.size,
+            //"height": this.size,
+            "font-size": this.size
         });
         
         if (Engine.setting('animations')) {
