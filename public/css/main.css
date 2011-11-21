@@ -9,6 +9,7 @@ body {
 
 .flake {
     z-index:100;
+    cursor:default;
 }
 
 .tweet {

@@ -38,53 +38,20 @@ Flake.prototype = {
         this.rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
         this.rotationSpeed = 9 + Math.floor(Math.random()*21);
 
-        
-        var img = null;
-        var images = {
-            "small": [
-                "flake_10_3.png",
-                "flake_16_1.png",
-                "flake_16_2.png",
-                "flake_16_3.png"
-            ],
-            "medium": [
-                "flake_32_1.png",
-                "flake_32_2.png",
-                "flake_48_1.png",
-                "flake_48_2.png",
-                "flake_48_3.png"
-            ],
-            "large": [
-                "flake_128_1.png",
-                "flake_128_2.png",
-                "flake_128_3.png"
-            ]
-        };
-
         if (this.tweet.text.search(/#nodeflakes/i) != -1) {
             if (this.size < 20) {
                 this.y -= 20 - this.size;
                 this.size = 20;
             }
-            img = 'nodeflake.png';
             SoundManager.playSound('nodeflake');
-        } else if (this.size < 17) {
-            img = images.small[Math.floor(Math.random() * images.small.length)];
-        } else if (this.size < 49) {
-            img = images.medium[Math.floor(Math.random() * images.medium.length)];
-        } else {
-            img = images.large[Math.floor(Math.random() * images.large.length)];
         }
 
         this.elem = $(
-            //"<img class='flake' src='http://localhost:7979/img/"+img+"' alt='' >"
-            "<div class='flake'>*</div>"
+            "<div class='flake'>&lowast;</div>"
         ).css({
             "left": this.x,
             "top": this.y,
-            //"width": this.size,
-            //"height": this.size,
-            "font-size": this.size
+            "font-size": this.size+"px"
         });
         
         if (Engine.setting('animations')) {

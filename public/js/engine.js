@@ -22,9 +22,9 @@ var Engine = (function(win, doc) {
         _win = $(win);
 
     that.addRandomlyPositionedTweet = function(data) {
-        var size = Math.round(10 + (data.user.followers_count / 100));
-        if (size > 200) {
-            size = 200;
+        var size = Math.round(8 + (data.user.followers_count / 100));
+        if (size > 250) {
+            size = 250;
         }
 
         var x = Math.floor(
