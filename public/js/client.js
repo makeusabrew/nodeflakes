@@ -41,6 +41,11 @@ var Client = (function() {
                 }
             });
         });
+
+        socket.on('disconnect', function() {
+            console.log('disconnect');
+            socket.removeAllListeners('tweet');
+        });
     }
 
     that.reconnect = function() {
@@ -49,7 +54,6 @@ var Client = (function() {
 
     that.disconnect = function() {
         socket.disconnect();
-        socket.removeAllListeners('tweet');
     }
 
     return that;
