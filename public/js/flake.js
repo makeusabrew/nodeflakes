@@ -16,6 +16,7 @@ var Flake = function() {
     this.dead = false;
     this.tweetVisible = false;
     this.processedTweet = null;
+    this.maxVx = 0;
 }
 
 Flake.prototype = {
@@ -28,26 +29,31 @@ Flake.prototype = {
         this.angle = Math.random() * 2*Math.PI;
 
         // how fast the flake will complete its rotary cycle, e.g. how fast it switches from left to right movement
-        this.rotation = 0.02 + Math.random() * 1.5;
+        this.rotation = 0.005 + Math.random() * 1.5;
 
         // a little bit of vertical spice
         // we've de-spiced a lot so users can see their tweets quicker. Boring.
         this.vy = -1 + Math.random() * 2;
 
-        this.maxVelocity = 10 + Math.random() * 20;
+        this.maxVx = 15 + Math.random() * 40;
+
+        this.maxVelocity = 8 + Math.random() * 22;
         this.rotationDir = Math.floor(Math.random()*2) ? "clockwise" : "anticlockwise";
-        this.rotationSpeed = 9 + Math.floor(Math.random()*21);
+        this.rotationSpeed = 8 + Math.floor(Math.random()*24);
 
         if (this.tweet.text.search(/#nodeflakes/i) != -1) {
+            content = "<div class='node flake'>☃</div>";
             if (this.size < 20) {
                 this.y -= 20 - this.size;
                 this.size = 20;
             }
             SoundManager.playSound('nodeflake');
+        } else {
+            content = "<div class='flake'>&lowast;</div>"
         }
 
         this.elem = $(
-            "<div class='flake'>&lowast;</div>"
+            content
         ).css({
             "left": this.x,
             "top": this.y,
@@ -93,7 +99,7 @@ Flake.prototype = {
         // NB no delta on the (horribly hard coded) velocity, since when we actually
         // add vx to the current position, we account for delta there. So, this value
         // will be capped from 0 - 40 based on the angle.
-        this.vx = Math.cos(this.angle) * (40);
+        this.vx = Math.cos(this.angle) * (this.maxVx);
 
         // @todo move this hard coded acceleration value
         this.vy += 5 * delta;
