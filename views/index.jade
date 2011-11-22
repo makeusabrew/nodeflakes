@@ -47,3 +47,8 @@ block scripts
     script(src='/js/sound_manager.js')
     script(src='/js/flake.js')
     script(src='/js/client.js')
+    script
+        $(function() {
+            console.log("starting");
+            Client.start("localhost", "7979");
+        });
