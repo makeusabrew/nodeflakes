@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<project name="Nodeflakes" default="test">
+
+    <property name="project.dir" value="." />
+    
+    <target name='clean'>
+        <echo msg='Cleaning up' />
+        <delete>
+            <fileset dir="tests/reports">
+                <include name="*.xml" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="test" description="Unit Tests" depends="clean">
+        <echo msg="Running Test Suite" />
+        <exec dir="tests" checkreturn="true" passthru="true" command="jasmine-node server/spec --junitreport" />
+    </target>
+</project>
