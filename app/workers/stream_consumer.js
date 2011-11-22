@@ -36,7 +36,7 @@ var StreamConsumer = function() {
     }
 
     this.onLine = function(line) {
-        //
+
     }
 }
 
