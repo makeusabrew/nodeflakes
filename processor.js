@@ -16,7 +16,13 @@ console.log("push: "+pushEndpoint);
 
 push.connect(pushEndpoint);
 
-processor.setPushSocket(push);
-processor.setPullSocket(pull);
-
-processor.start();
+pull.on('message', function(data) {
+    try {
+        push.send(
+            processor.process(data)
+        );
+    } catch (e) {
+        // something's amiss. Let's log what.
+        console.log(e.toString());
+    }
+});
