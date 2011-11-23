@@ -9,9 +9,9 @@ describe('StreamConsumer', function() {
     });
 
     it('should emit an error message when processing invalid JSON', function() {
-        expect(
+        expect(function() {
             processor.process("Invalid JSON")
-        ).toThrow(
+        }).toThrow(
             new Error("parse error of: Invalid JSON")
         );
     });
