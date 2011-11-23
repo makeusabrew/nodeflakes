@@ -2,29 +2,16 @@
 
 var express = require('express'),
     app     = express.createServer(),
-    io      = require('socket.io').listen(app),
+    io      = require('socket.io').listen(7979),
     fs      = require('fs'),
     zmq     = require('zmq');
 
 var Throughput = require('./app/throughput');
 
-app.listen(7979);
-
-app.configure(function() {
-    var oneYear = 31557600000;
-    app.use(express.static(__dirname + '/public', {maxAge: oneYear}));
-    app.set('view engine', 'jade');
-    app.set('view options', {
-        'layout': false
-    });
-});
-
 io.configure(function() {
     //io.set('transports', ['websocket']);
     io.set('log level', 2); // info
 });
-
-require('./app/routes')(app);
 
 var queue = zmq.createSocket('pull');
 
