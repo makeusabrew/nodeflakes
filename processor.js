@@ -23,6 +23,6 @@ pull.on('message', function(data) {
         );
     } catch (e) {
         // something's amiss. Let's log what.
-        console.log(e.toString());
+        console.log(e.message);
     }
 });

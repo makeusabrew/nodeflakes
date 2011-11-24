@@ -58,7 +58,7 @@ prompt.get(properties, function(err, result) {
     console.log('binding queue on '+endpoint);
 
     socket.bind(endpoint, function(err) {
-        console.log("connecting to "+options.host+"...");
+        console.log("connecting to "+options.host+options.path);
 
         https.get(options, function(response) {
             response.setEncoding("utf8");
