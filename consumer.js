@@ -24,16 +24,28 @@ properties.push({
     hidden: true
 });
 
+var track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,christmas songs,nodeflakes';
+properties.push({
+    message: 'Track keyword(s) (blank for default)',
+    name: 'track',
+});
+
 prompt.start();
 prompt.get(properties, function(err, result) {
 
     var username = result.username || process.argv[2];
 
+    if (result.track.length) {
+        track = result.track;
+    }
+
+    track = encodeURI(track);
+
     var auth = 'Basic ' + new Buffer(username + ':' + result.password).toString('base64');
     var options = {
         host: 'stream.twitter.com',
         port: 443,
-        path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas,christmas%20presents,merry%20xmas,love%20christmas,christmas%20songs,nodeflakes',
+        path: '/1/statuses/filter.json?track='+track,
         // for hardcore flake action, use the tracker below instead!
         //path: '/1/statuses/filter.json?track=christmas',
         headers: {
