@@ -1,68 +1,42 @@
-var https = require('https');
-
 var Throughput = require('../throughput');
 
-var socket = null;
+var throughput = new Throughput();
 
-var StreamConsumer = function(username, password) {
-    var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
-    var options = {
-        host: 'stream.twitter.com',
-        port: 443,
-        path: '/1/statuses/filter.json?track=merry%20christmas,happy%20christmas,father%20christmas,christmas%20presents,merry%20xmas,love%20christmas,nodeflakes',
-        // for hardcore flake action, use the tracker below instead!
-        //path: '/1/statuses/filter.json?track=christmas',
-        headers: {
-            authorization: auth
-        }
-    };
+var StreamConsumer = function() {
         
     var strpos = -1;
-    var tweet = '';
+    var buffer = '';
 
     this.start = function() {
-        var that = this;
-        console.log("connecting to "+options.host+"...");
-        https.get(options, function(res) {
-            if (res.statusCode != 200) {
-                console.log("got non OK response code: "+res.statusCode);
-                return;
-            }
-
-            var throughput = new Throughput();
-
-            console.log("connected!");
-
-            res.setEncoding("utf8");
-            res.on('data', function(chunk) {
-                tweet += chunk;
-                strpos = tweet.indexOf("\r");
-
-                if (strpos !== -1) {
-                    var data = tweet.substr(0, strpos);
-                    if (data.length > 1) {
-                        var rate = throughput.measure(data);
-                        console.log("sending message ("+rate.value+" "+rate.unit+")");
-
-                        // bung the completed tweet on the queue
-                        socket.send(data);
-                    } else {
-                        console.log("ignoring heartbeat "+data.length);
-                    }
-
-                    // make sure we don't lose the remainder
-                    tweet = tweet.substr(strpos+1);
-                }
-            });
-            res.on('end', function() {
-                console.log('end of response');
-                console.log("last chunk: "+tweet);
-            });
-        });
+        console.log('starting consumer');
     }
 
-    this.setSocket = function(_socket) {
-        socket = _socket;
+    this.stop = function() {
+        console.log('stopping consumer');
+    }
+
+    this.processChunk = function(chunk) {
+        buffer += chunk;
+        strpos = buffer.indexOf("\r");
+
+        if (strpos !== -1) {
+            var data = buffer.substr(0, strpos);
+            if (data.length > 1) {
+                var rate = throughput.measure(data);
+                console.log("sending message ("+rate.value+" "+rate.unit+")");
+
+                this.onLine(data);
+            } else {
+                console.log("ignoring heartbeat "+data.length);
+            }
+
+            // make sure we don't lose the remainder
+            buffer = buffer.substr(strpos+1);
+        }
+    }
+
+    this.onLine = function(line) {
+
     }
 }
 
