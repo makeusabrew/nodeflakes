@@ -59,12 +59,14 @@ prompt.get(properties, function(err, result) {
 
     var consumer = new StreamConsumer();
 
+    var retries = 5;
+    var retryTimeout = 1000;
+
     function streamConnect() {
         https.get(options, function(response) {
             response.setEncoding("utf8");
             if (response.statusCode != 200) {
                 console.log("got non OK response code: "+response.statusCode);
-                return;
             }
 
             consumer.start();
@@ -79,10 +81,35 @@ prompt.get(properties, function(err, result) {
 
             response.on('end', function() {
                 consumer.stop();
-                console.log('end of response - reconnecting in 0.5 seconds');
-                setTimeout(function() {
-                    streamConnect();
-                }, 500);
+                switch (response.statusCode) {
+                    // bad credentials
+                    case 401:
+                        console.log("bad credentials - check username / password");
+                        break;
+                    // rate limited
+                    case 420:
+                        if (retries > 0) {
+                            console.log("rate limited - retrying "+retries+" more times");
+                            setTimeout(function() {
+                                retries --;
+                                retryTimeout *= 2;
+
+                                streamConnect();
+
+                            }, retryTimeout);
+                        }
+                        break;
+                    // all looks okay, so just try again
+                    case 200:
+                        console.log('end of OK response - reconnecting in 1 second');
+                        setTimeout(function() {
+                            streamConnect();
+                        }, 1000);
+                        break;
+                    default:
+                        console.log("Unhandled response code ["+response.statusCode+"] - aborting");
+                        break;
+                }
             });
         });
     }
