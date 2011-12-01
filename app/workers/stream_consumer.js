@@ -4,11 +4,13 @@ var throughput = new Throughput();
 
 var StreamConsumer = function() {
         
-    var strpos = -1;
-    var buffer = '';
+    var strpos = null,
+        buffer = null;
 
     this.start = function() {
         console.log('starting consumer');
+        strpos = -1;
+        buffer = '';
     }
 
     this.stop = function() {

@@ -59,11 +59,7 @@ prompt.get(properties, function(err, result) {
 
     var consumer = new StreamConsumer();
 
-    console.log('binding queue on '+endpoint);
-
-    socket.bind(endpoint, function(err) {
-        console.log("connecting to "+options.host+options.path);
-
+    function streamConnect() {
         https.get(options, function(response) {
             response.setEncoding("utf8");
             if (response.statusCode != 200) {
@@ -83,8 +79,21 @@ prompt.get(properties, function(err, result) {
 
             response.on('end', function() {
                 consumer.stop();
-                console.log('end of response');
+                console.log('end of response - reconnecting in 0.5 seconds');
+                setTimeout(function() {
+                    connectToStream();
+                }, 500);
             });
         });
+    }
+
+    console.log('binding queue on '+endpoint);
+
+    socket.bind(endpoint, function(err) {
+        console.log("connecting to "+options.host+options.path);
+
+        streamConnect();
+
     });
 });
+
