@@ -17,6 +17,7 @@ var queue = zmq.createSocket('pull');
 
 var throughput = new Throughput();
 var handled = {};
+var handledArray = [];
 
 
 queue.bind('tcp://127.0.0.1:5556', function(err) {
@@ -40,7 +41,13 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
             console.log("ignoring duplicate tweet ["+tweet.id+"]");
             return;
         }
-        handled[tweet.id] = true;
+
+        handled[tweet.id] = tweet;
+        handledArray.push(tweet.id);
+        if (handledArray.length > 20) {
+            var id = handledArray.shift();
+            delete handled[id];
+        }
 
         io.sockets.emit('tweet', data.toString('utf8'));
     });
@@ -48,4 +55,7 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
 
 io.sockets.on('connection', function(socket) {
     // any ack?
+    socket.on('disconnect', function() {
+        // ?
+    });
 });

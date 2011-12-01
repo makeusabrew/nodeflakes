@@ -9,6 +9,7 @@ var properties = [];
 
 var endpoint = 'tcp://127.0.0.1:5554';
 
+
 if (process.argv[2] == null)  {
     properties.push({
         message: 'Twiter username',
@@ -17,26 +18,31 @@ if (process.argv[2] == null)  {
     });
 }
 
-properties.push({
-    message: 'Twiter username password',
-    name: 'password',
-    empty: false,
-    hidden: true
-});
+if (process.argv[4] == null)  {
+    properties.push({
+        message: 'Twiter username password',
+        name: 'password',
+        empty: false,
+        hidden: true
+    });
+}
 
-var track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,christmas songs,nodeflakes';
-properties.push({
-    message: 'Track keyword(s) (blank for default)',
-    name: 'track',
-});
+if (process.argv[3] == null) {
+    properties.push({
+        message: 'Track keyword(s) (blank for default)',
+        name: 'track',
+    });
+}
 
 prompt.start();
 prompt.get(properties, function(err, result) {
 
     var username = result.username || process.argv[2];
+    var password = result.password || process.argv[4];
+    var track    = result.track    || process.argv[3];
 
-    if (result.track.length) {
-        track = result.track;
+    if (track == null || track == '') {
+        track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,christmas songs,nodeflakes';
     }
 
     track = encodeURI(track);
@@ -46,8 +52,6 @@ prompt.get(properties, function(err, result) {
         host: 'stream.twitter.com',
         port: 443,
         path: '/1/statuses/filter.json?track='+track,
-        // for hardcore flake action, use the tracker below instead!
-        //path: '/1/statuses/filter.json?track=christmas',
         headers: {
             authorization: auth
         }

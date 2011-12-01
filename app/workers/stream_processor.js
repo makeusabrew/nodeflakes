@@ -20,6 +20,13 @@ var StreamProcessor = function() {
             
         var filter = new RegExp("fuck|shit|bollocks|\bdick\b|pussy|cunt|\bporn\b|\bsex\b", "i");
 
+        // see the footnote at the bottom of this file RE unicode issues
+        var newText = quote(processed.text);
+
+        if (processed.text != newText) {
+            processed.text = newText.replace(/\\u([A-Fa-f0-9]){4}/g, '');
+        }
+
         var fullTweet = processed.user.screen_name+": "+processed.text;
 
         if (filter.test(fullTweet)) {
@@ -81,3 +88,44 @@ var StreamProcessor = function() {
 }
 
 module.exports = StreamProcessor;
+
+/**
+ * thanks massively to the sockjs project for taking on this horrific unicode issue. This code is lifted directly from
+ * https://github.com/sockjs/sockjs-node/blob/dev/src/utils.coffee - all credit to @majek whose work it is entirely
+ */
+var escapable, lookup, unroll_lookup, quote;
+
+escapable = /[\x00-\x1f\ud800-\udfff\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufff0-\uffff]/g;
+
+unroll_lookup = function(escapable) {
+  var c, i, unrolled;
+  unrolled = {};
+  c = (function() {
+    var _results;
+    _results = [];
+    for (i = 0; i < 65536; i++) {
+      _results.push(String.fromCharCode(i));
+    }
+    return _results;
+  })();
+  escapable.lastIndex = 0;
+  c.join('').replace(escapable, function(a) {
+    return unrolled[a] = '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+  });
+  return unrolled;
+};
+
+lookup = unroll_lookup(escapable);
+
+var doLog = false;
+quote = function(string) {
+  var quoted = string;
+  //quoted = JSON.stringify(string);
+  escapable.lastIndex = 0;
+  if (!escapable.test(quoted)) return quoted;
+  var retString = quoted.replace(escapable, function(a) {
+    return lookup[a];
+  });
+  return retString;
+};
+
