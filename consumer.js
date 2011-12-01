@@ -81,7 +81,7 @@ prompt.get(properties, function(err, result) {
                 consumer.stop();
                 console.log('end of response - reconnecting in 0.5 seconds');
                 setTimeout(function() {
-                    connectToStream();
+                    streamConnect();
                 }, 500);
             });
         });
