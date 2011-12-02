@@ -1,10 +1,8 @@
 #!/usr/local/bin/node
 
-var express = require('express'),
-    app     = express.createServer(),
-    io      = require('socket.io').listen(7979),
-    fs      = require('fs'),
-    zmq     = require('zmq');
+var io   = require('socket.io').listen(7979),
+    fs   = require('fs'),
+    zmq  = require('zmq');
 
 var Throughput = require('./app/throughput');
 
