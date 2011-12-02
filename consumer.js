@@ -42,7 +42,7 @@ prompt.get(properties, function(err, result) {
     var track    = result.track    || process.argv[3];
 
     if (track == null || track == '') {
-        track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,nodeflakes';
+        track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,nodeflakes,christmas songs';
     }
 
     track = encodeURI(track);
