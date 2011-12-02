@@ -17,18 +17,16 @@ io.configure(function() {
 
 var queue = zmq.createSocket('pull');
 
-var throughput = new Throughput();
+var throughput = new Throughput(2000);
 var handled = {};
 var handledArray = [];
-
 
 queue.bind('tcp://127.0.0.1:5556', function(err) {
     if (err) throw err;
     console.log('bound ZMQ pull server');
     queue.on('message', function(data) {
 
-        var rate = throughput.measure(data);
-        console.log("got message ("+rate.value+" "+rate.unit+")");
+        throughput.measure(data);
 
         // @todo ideally we wouldn't parse the inbound data *just* to get the tweet ID. Perhaps
         // the processor daemons can put a delemited message on instead?

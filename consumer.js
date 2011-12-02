@@ -47,7 +47,7 @@ prompt.get(properties, function(err, result) {
 
     track = encodeURI(track);
 
-    var auth = 'Basic ' + new Buffer(username + ':' + result.password).toString('base64');
+    var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
     var options = {
         host: 'stream.twitter.com',
         port: 443,

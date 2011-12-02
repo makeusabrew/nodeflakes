@@ -1,6 +1,6 @@
 var Throughput = require('../throughput');
 
-var throughput = new Throughput();
+var throughput = new Throughput(2000);
 
 var StreamConsumer = function() {
         
@@ -24,8 +24,7 @@ var StreamConsumer = function() {
         if (strpos !== -1) {
             var data = buffer.substr(0, strpos);
             if (data.length > 1) {
-                var rate = throughput.measure(data);
-                console.log("sending message ("+rate.value+" "+rate.unit+")");
+                throughput.measure(data);
 
                 this.onLine(data);
             } else {

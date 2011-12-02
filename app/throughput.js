@@ -1,24 +1,35 @@
-var Throughput = function() {
-    this.lastData = new Date();
-    this.thisData = null;
+var Throughput = function(interval) {
+    this.lastInterval = new Date().getTime();
+    this.interval = interval;
+    this.buffer = '';
+    this.msgCount = 0;
 }
 
 Throughput.prototype.measure = function(data) {
-    this.thisData = new Date();
-    // figure out how many seconds have elapsed since our last message
-    var duration = (this.thisData.getTime() - this.lastData.getTime()) / 1000;
+    this.buffer += data;
+    this.msgCount ++;
 
-    this.lastData = this.thisData;
+    var now = new Date().getTime();
 
-    // reduce get the length in K/sec
-    var chunkLength = data.length / 1024;
+    var elapsed = now - this.lastInterval;
+    if (elapsed >= this.interval) {
+        this.lastInterval = now;
+        // reduce get the length in K/sec
+        var chunkLength = this.buffer.length / 1024;
 
-    var throughput = {
-        "value": Math.round((chunkLength / duration) * 10) / 10,
-        "unit" : "kB/s"
-    };
+        var duration = elapsed / 1000;
 
-    return throughput;
+        var throughput = {
+            "value": Math.round((chunkLength / duration) * 10) / 10,
+            "unit" : "kB/s",
+            "msgCount": this.msgCount
+        };
+
+        console.log("Throughput: ("+throughput.value+" "+throughput.unit+") - ("+throughput.msgCount+")");
+
+        this.msgCount = 0;
+        this.buffer = '';
+    }
 }
 
 module.exports = Throughput;
