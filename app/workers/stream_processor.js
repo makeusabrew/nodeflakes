@@ -1,12 +1,12 @@
 var Throughput = require('../throughput');
 require('colors');
 
-var throughput = new Throughput();
+var throughput = new Throughput(2000);
 
 var StreamProcessor = function() {
     this.process = function(data) {
-        var rate = throughput.measure(data);
-        console.log("processing message ("+rate.value+" "+rate.unit+")");
+        throughput.measure(data);
+
         var processed = null;
         try {
             processed = JSON.parse(data.toString('utf8'));
