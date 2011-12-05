@@ -42,7 +42,7 @@ prompt.get(properties, function(err, result) {
     var track    = result.track    || process.argv[3];
 
     if (track == null || track == '') {
-        track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,nodeflakes,christmas songs';
+        track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,nodeflakes,christmas songs,christmas shopping';
     }
 
     track = encodeURI(track);
@@ -101,10 +101,10 @@ prompt.get(properties, function(err, result) {
                         break;
                     // all looks okay, so just try again
                     case 200:
-                        console.log('end of OK response - reconnecting in 1 second');
+                        console.log('end of OK response - reconnecting in 2 seconds');
                         setTimeout(function() {
                             streamConnect();
-                        }, 1000);
+                        }, 2000);
                         break;
                     default:
                         console.log("Unhandled response code ["+response.statusCode+"] - aborting");
