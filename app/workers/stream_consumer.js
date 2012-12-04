@@ -1,6 +1,11 @@
-var Throughput = require('../throughput');
+var Throughput = require('../throughput'),
+    StatsD     = require ('node-statsd').StatsD;
 
 var throughput = new Throughput(2000);
+
+var stats = new StatsD(process.argv[5], 8125);
+
+throughput.setStats(stats, 'consumer');
 
 var StreamConsumer = function() {
         
@@ -26,6 +31,7 @@ var StreamConsumer = function() {
             if (data.length > 1) {
                 throughput.measure(data);
 
+                stats.increment('nodeflakes.consumer.line');
                 this.onLine(data);
             } else {
                 console.log("ignoring heartbeat "+data.length);

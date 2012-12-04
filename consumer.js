@@ -1,7 +1,6 @@
 var zmq            = require('zmq'),
     prompt         = require('prompt'),
-    https          = require('https'),
-    StatsD         = require('node-statsd').StatsD;
+    https          = require('https');
 
 var socket         = zmq.createSocket('push');
 var StreamConsumer = require('./app/workers/stream_consumer');
@@ -34,21 +33,12 @@ if (process.argv[3] == null) {
     });
 }
 
-if (!process.argv[5]) {
-    properties.push({
-        message: 'StatsD host',
-        name: 'statsd',
-        empty: false
-    });
-}
-
 prompt.start();
 prompt.get(properties, function(err, result) {
 
     var username = result.username || process.argv[2];
     var password = result.password || process.argv[4];
     var track    = result.track    || process.argv[3];
-    var statsd   = result.statsd   || process.argv[5];
 
     if (track == null || track == '') {
         track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,nodeflakes,christmas songs,christmas shopping';
@@ -68,8 +58,6 @@ prompt.get(properties, function(err, result) {
 
     var consumer = new StreamConsumer();
 
-    var stats = new StatsD(statsd, 8125);
-
     var retries = 5;
     var retryTimeout = 1000;
 
@@ -83,7 +71,6 @@ prompt.get(properties, function(err, result) {
             consumer.start();
 
             consumer.onLine = function(line) {
-                stats.increment('nodeflakes.consumer.line');
                 socket.send(line);
             }
 

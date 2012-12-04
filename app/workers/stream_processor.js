@@ -7,6 +7,8 @@ var throughput = new Throughput(2000);
 
 var stats = new StatsD(process.argv[2], 8125);
 
+throughput.setStats(stats, 'processor');
+
 var StreamProcessor = function() {
     this.process = function(data) {
         throughput.measure(data);

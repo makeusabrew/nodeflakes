@@ -3,7 +3,14 @@ var Throughput = function(interval) {
     this.interval = interval;
     this.buffer = '';
     this.msgCount = 0;
+    this.statsd = null;
+    this.namespace = null;
 }
+
+Throughput.prototype.setStats = function(statsd, namespace) {
+    this.statsd = statsd;
+    this.namespace = namespace;
+};
 
 Throughput.prototype.measure = function(data) {
     this.buffer += data;
@@ -27,9 +34,13 @@ Throughput.prototype.measure = function(data) {
 
         console.log("Throughput: ("+throughput.value+" "+throughput.unit+") - ("+throughput.msgCount+")");
 
+        if (this.statsd && this.namespace) {
+            this.statsd.timing('nodeflakes.'+this.namespace+'.throughput', throughput.value);
+        }
+
         this.msgCount = 0;
         this.buffer = '';
     }
-}
+};
 
 module.exports = Throughput;
