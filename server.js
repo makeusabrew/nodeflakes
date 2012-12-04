@@ -1,19 +1,20 @@
 #!/usr/local/bin/node
 
-var io   = require('socket.io').listen(7979),
-    fs   = require('fs'),
-    zmq  = require('zmq');
+var io     = require('socket.io').listen(7979),
+    fs     = require('fs'),
+    zmq    = require('zmq'),
+    StatsD = require ('node-statsd').StatsD;
 
 var Throughput = require('./app/throughput');
 
 io.configure(function() {
     //io.set('transports', ['websocket']);
     io.set('log level', 2); // info
-    if (process.argv[2]) {
-        console.log("restricting origin: "+process.argv[2]);
-        io.set("origins", process.argv[2]);
-    }
+    console.log("restricting origin: "+process.argv[3]);
+    io.set("origins", process.argv[3]);
 });
+
+var stats = new StatsD(process.argv[2], 8125);
 
 var queue = zmq.createSocket('pull');
 
@@ -35,10 +36,12 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
             tweet = JSON.parse(data);
         } catch (e) {
             console.log("could not parse tweet");
+            stats.increment('nodeflakes.server.parse_error');
             return;
         }
         if (handled[tweet.id] != null) {
             console.log("ignoring duplicate tweet ["+tweet.id+"]");
+            stats.increment('nodeflakes.server.duplicate_tweet');
             return;
         }
 
@@ -49,13 +52,15 @@ queue.bind('tcp://127.0.0.1:5556', function(err) {
             delete handled[id];
         }
 
+        stats.increment('nodeflakes.server.tweet');
         io.sockets.emit('tweet', data.toString('utf8'));
     });
 });
 
 io.sockets.on('connection', function(socket) {
     // any ack?
+    stats.increment('nodeflakes.server.connect');
     socket.on('disconnect', function() {
-        // ?
+        stats.increment('nodeflakes.server.disconnect');
     });
 });

@@ -1,7 +1,11 @@
-var Throughput = require('../throughput');
 require('colors');
 
+var Throughput = require('../throughput'),
+    StatsD     = require ('node-statsd').StatsD;
+
 var throughput = new Throughput(2000);
+
+var stats = new StatsD(process.argv[2], 8125);
 
 var StreamProcessor = function() {
     this.process = function(data) {
@@ -12,9 +16,11 @@ var StreamProcessor = function() {
             processed = JSON.parse(data.toString('utf8'));
         } catch (e) {
             // couldn't parse
+            stats.increment('nodeflakes.processor.parse_error');
             throw new Error("parse error of: "+data.toString('utf8'));
         }
         if (processed.text == null) {
+            stats.increment('nodeflakes.processor.bad_format');
             throw new Error("discarding message with bad format - assuming delete or rate limit info".bold);
         }
             
@@ -30,6 +36,7 @@ var StreamProcessor = function() {
         var fullTweet = processed.user.screen_name+": "+processed.text;
 
         if (filter.test(fullTweet)) {
+            stats.increment('nodeflakes.processor.filter.profanity');
             throw new Error("PROFANITY FILTER:".red+" ["+fullTweet+"]");
         }
 
@@ -51,11 +58,13 @@ var StreamProcessor = function() {
             if (eType == 'urls') {
                 // spam stuff
                 if (j >= 4) {
+                    stats.increment('nodeflakes.processor.filter.spam');
                     throw new Error("SPAM FILTER:".yellow+" excessive link volume ("+j+"): "+fullTweet);
                 } else if (j == 3 && processed.user.followers_count < 50 ||
                            j == 2 && processed.user.followers_count < 10 ||
                            j == 1 && processed.user.followers_count == 0) {
 
+                    stats.increment('nodeflakes.processor.filter.spam');
                     throw new Error("SPAM FILTER:".yellow+" excessive link Vs follower count ("+j+" Vs "+processed.user.followers_count+"): "+fullTweet);
 
                 } else if (j >= 2) {
@@ -83,6 +92,7 @@ var StreamProcessor = function() {
                 "screen_name": processed.user.screen_name
             }
         };
+        stats.increment('nodeflakes.processor.tweet');
         return JSON.stringify(tweetData);
     }
 }
