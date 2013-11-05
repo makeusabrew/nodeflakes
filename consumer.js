@@ -26,14 +26,14 @@ console.log('binding queue on '+endpoint);
 
 socket.bind(endpoint, function(err) {
     console.log("connecting to streaming API");
-    startStream(stream);
+    startStream();
 });
 
-function startStream(stream) {
-    var consumer = new StreamConsumer();
+var retries = 5;
+var retryTimeout = 1000;
 
-    var retries = 5;
-    var retryTimeout = 1000;
+function startStream() {
+    var consumer = new StreamConsumer();
 
     stream.stream();
 
@@ -43,7 +43,7 @@ function startStream(stream) {
       console.log("stream connected");
     });
 
-    stream.on('data', function(json) {
+    stream.on("data", function(json) {
       consumer.processChunk(json);
     });
 
@@ -51,9 +51,19 @@ function startStream(stream) {
         socket.send(line);
     };
 
-    stream.on('end', function() {
+    stream.on("error", function(error) {
+        console.log(arguments);
+        var statusCode;
+
         consumer.stop();
-        switch (response.statusCode) {
+
+        if (error.type === "response") {
+          statusCode = error.data.code;
+        } else {
+          // @TODO
+          statusCode = 500;
+        }
+        switch (statusCode) {
             // bad credentials
             case 401:
                 console.log("bad credentials - check username / password");
@@ -66,7 +76,7 @@ function startStream(stream) {
                         retries --;
                         retryTimeout *= 2;
 
-                        streamConnect();
+                        startStream();
 
                     }, retryTimeout);
                 }
@@ -75,7 +85,7 @@ function startStream(stream) {
             case 200:
                 console.log('end of OK response - reconnecting in 2 seconds');
                 setTimeout(function() {
-                    streamConnect();
+                    startStream();
                 }, 2000);
                 break;
             default:
