@@ -21,7 +21,7 @@
     "zmq": "~2.5.1",
     "socket.io": "~0.9.16",
     "colors": "~0.6.2",
-    "prompt": "~0.2.11",
-    "node-statsd": "0.0.7"
+    "node-statsd": "0.0.7",
+    "twitter-stream-oauth": "0.0.1"
   }
 }

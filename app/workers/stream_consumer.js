@@ -8,7 +8,7 @@ var stats = new StatsD(process.argv[5], 8125);
 throughput.setStats(stats, 'consumer');
 
 var StreamConsumer = function() {
-        
+
     var strpos = null,
         buffer = null;
 
@@ -16,35 +16,27 @@ var StreamConsumer = function() {
         console.log('starting consumer');
         strpos = -1;
         buffer = '';
-    }
+    };
 
     this.stop = function() {
         console.log('stopping consumer');
-    }
+    };
 
     this.processChunk = function(chunk) {
-        buffer += chunk;
-        strpos = buffer.indexOf("\r");
+        // this is now almost totally redundant but in the interests
+        // of not making major changes it just marshals up the JSON
+        // and emits an onLine whilst preserving throughput tracking
+        var data = JSON.stringify(chunk);
 
-        if (strpos !== -1) {
-            var data = buffer.substr(0, strpos);
-            if (data.length > 1) {
-                throughput.measure(data);
+        throughput.measure(data);
 
-                stats.increment('nodeflakes.consumer.line');
-                this.onLine(data);
-            } else {
-                console.log("ignoring heartbeat "+data.length);
-            }
-
-            // make sure we don't lose the remainder
-            buffer = buffer.substr(strpos+1);
-        }
-    }
+        stats.increment('nodeflakes.consumer.line');
+        this.onLine(data);
+    };
 
     this.onLine = function(line) {
-
-    }
-}
+      // no-op by default
+    };
+};
 
 module.exports = StreamConsumer;
