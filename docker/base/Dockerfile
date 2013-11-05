@@ -1,4 +1,4 @@
-# build as makeusabrew/nodeflakes
+# dockerb: build as makeusabrew/nodeflakes
 FROM makeusabrew/zeromq
 
 MAINTAINER Nick Payne <nick@kurai.co.uk>

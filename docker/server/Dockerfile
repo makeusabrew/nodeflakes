@@ -1,3 +1,4 @@
+# dockerb: build as makeusabrew/nodeflakes/server
 FROM makeusabrew/nodeflakes
 
 # this is the port our server queue binds on
