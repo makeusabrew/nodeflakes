@@ -10,8 +10,10 @@ var Throughput = require('./app/throughput');
 io.configure(function() {
     //io.set('transports', ['websocket']);
     io.set('log level', 2); // info
-    console.log("restricting origin: "+process.argv[3]);
-    io.set("origins", process.argv[3]);
+    if (process.argv[3]) {
+      console.log("restricting origin: "+process.argv[3]);
+      io.set("origins", process.argv[3]);
+    }
 });
 
 var stats = new StatsD(process.argv[2], 8125);
