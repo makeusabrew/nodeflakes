@@ -4,7 +4,7 @@ var processor = new StreamProcessor();
 
 // the queue we'll get raw tweet data off
 var pull = zmq.createSocket('pull');
-var pushEndpoint = process.env.CONSUMER_PORT;
+var pullEndpoint = process.env.CONSUMER_PORT;
 console.log("pull: "+pullEndpoint);
 
 pull.connect(pullEndpoint);

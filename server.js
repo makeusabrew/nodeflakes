@@ -24,7 +24,7 @@ var handledArray = [];
 
 throughput.setStats(stats, 'server');
 
-queue.bind('tcp://127.0.0.1:5556', function(err) {
+queue.bind('tcp://*:5556', function(err) {
     if (err) throw err;
     console.log('bound ZMQ pull server');
     queue.on('message', function(data) {
