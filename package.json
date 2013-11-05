@@ -1,0 +1,27 @@
+{
+  "name": "nodeflakes",
+  "version": "1.0.0",
+  "description": "Real time tweet powered snowflakes",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/makeusabrew/nodeflakes.git"
+  },
+  "author": "Nick Payne <nick@kurai.co.uk>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "zmq": "~2.5.1",
+    "socket.io": "~0.9.16",
+    "colors": "~0.6.2",
+    "prompt": "~0.2.11",
+    "node-statsd": "0.0.7"
+  }
+}
