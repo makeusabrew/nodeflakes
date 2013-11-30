@@ -4,7 +4,7 @@ var Stream         = require('twitter-stream-oauth');
 var socket         = zmq.createSocket('push');
 var StreamConsumer = require('./app/workers/stream_consumer');
 
-var endpoint = 'tcp://127.0.0.1:5554';
+var endpoint = 'tcp://*:5554';
 var track    = process.argv[2];
 
 if (!track) {

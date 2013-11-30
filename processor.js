@@ -4,14 +4,14 @@ var processor = new StreamProcessor();
 
 // the queue we'll get raw tweet data off
 var pull = zmq.createSocket('pull');
-var pullEndpoint = 'tcp://127.0.0.1:5554';
+var pullEndpoint = process.env.CONSUMER_PORT_5554_TCP;
 console.log("pull: "+pullEndpoint);
 
 pull.connect(pullEndpoint);
 
 // the queue we'll push processed data onto
 var push = zmq.createSocket('push');
-var pushEndpoint = 'tcp://127.0.0.1:5556';
+var pushEndpoint = process.env.SERVER_PORT_5556_TCP;
 console.log("push: "+pushEndpoint);
 
 push.connect(pushEndpoint);
