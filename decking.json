@@ -1,0 +1,37 @@
+{
+    "images": {
+        "makeusabrew/nodeflakes": "./docker/base",
+        "makeusabrew/nodeflakes-server": "./docker/server",
+        "makeusabrew/nodeflakes-consumer": "./docker/consumer",
+        "makeusabrew/nodeflakes-processor": "./docker/processor"
+    },
+    "containers": {
+        "nfserver": {
+            "image": "makeusabrew/nodeflakes-server",
+            "port": ["7979:7979"]
+        },
+        "nfprocessor": {
+            "image": "makeusabrew/nodeflakes-processor",
+            "dependencies": [
+                "nfserver:server",
+                "nfconsumer:consumer"
+            ],
+            "//": "@NOTE: we can't move dependencies to cluster level since we need them when creating a container",
+            "//": "@NOTE: dependencies are doubly awkward since they need to exist when creating the dependent container"
+
+        },
+        "nfconsumer": {
+            "image": "makeusabrew/nodeflakes-consumer",
+            "env": {
+                "CONSUMER_KEY": "-",
+                "CONSUMER_SECRET": "-",
+                "ACCESS_TOKEN_KEY": "-",
+                "ACCESS_TOKEN_SECRET": "-"
+            },
+            "//": "@NOTE: for now, an env key with a value of '-' will be replaced with the corresponding process.env[key] value"
+        }
+    },
+    "clusters": {
+        "main": ["nfconsumer", "nfserver", "nfprocessor"]
+    }
+}
