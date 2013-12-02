@@ -11,17 +11,6 @@ if (!track) {
     track = 'merry christmas,happy christmas,father christmas,christmas presents,merry xmas,love christmas,nodeflakes,christmas songs,christmas shopping';
 }
 
-var stream = new Stream({
-    consumer_key: process.env.CONSUMER_KEY,
-    consumer_secret: process.env.CONSUMER_SECRET,
-    access_token_key: process.env.ACCESS_TOKEN_KEY,
-    access_token_secret: process.env.ACCESS_TOKEN_SECRET,
-    api: 'filter',
-    api_params: {
-      track: track
-    }
-});
-
 console.log('binding queue on '+endpoint);
 
 socket.bind(endpoint, function(err) {
@@ -35,6 +24,18 @@ var retryTimeout = 1000;
 function startStream() {
     var consumer = new StreamConsumer();
 
+	var stream = new Stream({
+		consumer_key: process.env.CONSUMER_KEY,
+		consumer_secret: process.env.CONSUMER_SECRET,
+		access_token_key: process.env.ACCESS_TOKEN_KEY,
+		access_token_secret: process.env.ACCESS_TOKEN_SECRET,
+		api: 'filter',
+		api_params: {
+		  track: track
+		}
+	});
+
+
     stream.stream();
 
     consumer.start();
@@ -44,7 +45,30 @@ function startStream() {
     });
 
     stream.on("data", function(json) {
+      //console.log("data");
       consumer.processChunk(json);
+    });
+
+    stream.on("garbage", function() {
+      console.log("garbage", arguments);
+    });
+
+    stream.on("close", function() {
+      console.log("close", arguments);
+
+      consumer.stop();
+      stream.destroy();
+
+      setTimeout(function() {
+
+        startStream();
+
+      }, 1000);
+
+    });
+
+    stream.on("heartbeat", function() {
+      console.log("heartbeat", arguments);
     });
 
     consumer.onLine = function(line) {
@@ -56,6 +80,8 @@ function startStream() {
         var statusCode;
 
         consumer.stop();
+
+	stream.destroy();
 
         if (error.type === "response") {
           statusCode = error.data.code;
