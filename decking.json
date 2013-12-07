@@ -15,15 +15,12 @@
             "dependencies": [
                 "nfserver:server",
                 "nfconsumer:consumer"
-            ],
-            "//": "@NOTE: we can't move dependencies to cluster level since we need them when creating a container",
-            "//": "@NOTE: dependencies are doubly awkward since they need to exist when creating the dependent container"
-
+            ]
         },
         "nfconsumer": {
             "image": "makeusabrew/nodeflakes-consumer",
             "env": ["CONSUMER_KEY=-", "CONSUMER_SECRET=-", "ACCESS_TOKEN_KEY=-", "ACCESS_TOKEN_SECRET=-"],
-            "//": "@NOTE: for now, an env key with a value of '-' will be replaced with the corresponding process.env[key] value"
+            "//": "@NOTE: - will be replaced with the corresponding process.env[key] or prompted for if not found"
         }
     },
     "clusters": {
