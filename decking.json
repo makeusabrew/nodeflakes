@@ -27,6 +27,6 @@
         }
     },
     "clusters": {
-        "main": ["nfconsumer", "nfserver", "nfprocessor"]
+        "main": ["nfprocessor", "nfconsumer", "nfserver"]
     }
 }
